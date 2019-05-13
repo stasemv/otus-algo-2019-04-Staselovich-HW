@@ -1,7 +1,10 @@
 #include "use_arrays.h"
 
 #include <stdio.h>
-#include "time.h"
+#include <time.h>
+#include <iostream>
+#include <fstream>
+
 #include "dynamic_arrays.h"
 
 #define _PRINT_ARRAYS_ 0
@@ -9,11 +12,38 @@
 template<class T>
 void printArray(clsDynArr<T> *arr);
 template<class T>
-void testAddArrays(const char *name, clsDynArr<T> *arr, int amount);
+double testAddArrays(const char *name, clsDynArr<T> *arr, int amount);
 template<class T>
-void testAddIArrays(const char *name, clsDynArr<T> *arr, int amount);
+double testAddIArrays(const char *name, clsDynArr<T> *arr, int amount);
 template<class T>
-void testRemoveIArrays(const char *name, clsDynArr<T> *arr, int amount);
+double testRemoveIArrays(const char *name, clsDynArr<T> *arr, int amount);
+
+#define testAllStructures(name, func) \
+    fout << name << "\n";  \
+    fout << "amount\t" << "add\t"  \
+         << "add_i\t" << "remove\t" << "\n"; \
+    for(int a = 10000; a < 1000000+1; a *= 10) { \
+        printf("\namount = %i\n", a);   \
+        fout << a << "\t";  \
+        fout << func<_type>("block", &_type_block_arr, a) << "\t"; \
+        fout << func<_type>("factor", &_type_factor_arr, a) << "\t";   \
+        fout << func<_type>("matr", &_type_matr_arr, a) << "\t";   \
+        fout << "\n";   \
+    }
+
+#define testAllMethods(name, data) \
+    fout << name << "\n";    \
+    fout << "amount\t" << "add\t"   \
+    << "add_i\t" << "remove\t" << "\n";    \
+    for(int a = 10000; a < 1000000+1; a *= 10) {    \
+    testRemoveIArrays<_type>(name, &data, data.size());   \
+    printf("\namount = %i\n", a);   \
+    fout << a << "\t";  \
+    fout << testAddArrays<_type>(name, &data, a) << "\t"; \
+    fout << testAddIArrays<_type>(name, &data, a/100) << "\t";    \
+    fout << testRemoveIArrays<_type>(name, &data, a/100) << "\t"; \
+    fout << "\n";   \
+    }
 
 void useAllArrays()
 {
@@ -36,14 +66,28 @@ void useAllArrays()
 //    testAddIArrays<_type>("factor", &_type_factor_arr, total*0.5);
 //    testRemoveIArrays<_type>("factor", &_type_factor_arr, total*0.33 + 1);
 
-    clsMatrixArr<_type> _type_matr_arr(10);
-    testAddArrays<_type>("matr", &_type_matr_arr, total);
-    testAddIArrays<_type>("matr", &_type_matr_arr, total/100);
-    testRemoveIArrays<_type>("matr", &_type_matr_arr, total/100);
+//    clsMatrixArr<_type> _type_matr_arr(10);
+//    testAddArrays<_type>("matr", &_type_matr_arr, total);
+//    testAddIArrays<_type>("matr", &_type_matr_arr, total/100);
+//    testRemoveIArrays<_type>("matr", &_type_matr_arr, total/100);
+
+    // compare
+    if( 1 ) {
+        std::ofstream fout("../times.xls");
+        clsBlockArr<_type> _type_block_arr(100);
+        clsFactorArr<_type> _type_factor_arr;
+        clsMatrixArr<_type> _type_matr_arr(100);
+
+        testAllMethods("block",_type_block_arr);
+        testAllMethods("factor",_type_factor_arr);
+        testAllMethods("matr",_type_matr_arr);
+
+        fout.close();
+    }
 }
 
 template<class T>
-void testAddArrays(const char *name, clsDynArr<T> *arr, int amount)
+double testAddArrays(const char *name, clsDynArr<T> *arr, int amount)
 {
     clock_t c_start, c_finish;
     c_start = clock();
@@ -56,12 +100,13 @@ void testAddArrays(const char *name, clsDynArr<T> *arr, int amount)
     c_finish = clock();
     clock_t delta = c_finish-c_start;
     printf("%s add clocks = %li\n", name, delta);
-    double operatingTimeFull = delta*1.0/CLOCKS_PER_SEC;
-    printf("%s add time = %f\n", name, operatingTimeFull);
+    double time = delta*1.0/CLOCKS_PER_SEC;
+    printf("%s add time = %f\n", name, time);
+    return time;
 }
 
 template<class T>
-void testAddIArrays(const char *name, clsDynArr<T> *arr, int amount)
+double testAddIArrays(const char *name, clsDynArr<T> *arr, int amount)
 {
     clock_t c_start, c_finish;
     c_start = clock();
@@ -77,12 +122,13 @@ void testAddIArrays(const char *name, clsDynArr<T> *arr, int amount)
     c_finish = clock();
     clock_t delta = c_finish-c_start;
     printf("%s add_i clocks = %li\n", name, delta);
-    double operatingTimeFull = delta*1.0/CLOCKS_PER_SEC;
-    printf("%s add_i time = %f\n", name, operatingTimeFull);
+    double time = delta*1.0/CLOCKS_PER_SEC;
+    printf("%s add_i time = %f\n", name, time);
+    return time;
 }
 
 template<class T>
-void testRemoveIArrays(const char *name, clsDynArr<T> *arr, int amount)
+double testRemoveIArrays(const char *name, clsDynArr<T> *arr, int amount)
 {
     clock_t c_start, c_finish;
     c_start = clock();
@@ -98,8 +144,9 @@ void testRemoveIArrays(const char *name, clsDynArr<T> *arr, int amount)
     c_finish = clock();
     clock_t delta = c_finish-c_start;
     printf("%s remove clocks = %li\n", name, delta);
-    double operatingTimeFull = delta*1.0/CLOCKS_PER_SEC;
-    printf("%s remove time = %f\n", name, operatingTimeFull);
+    double time = delta*1.0/CLOCKS_PER_SEC;
+    printf("%s remove time = %f\n", name, time);
+    return time;
 }
 
 template<class T>

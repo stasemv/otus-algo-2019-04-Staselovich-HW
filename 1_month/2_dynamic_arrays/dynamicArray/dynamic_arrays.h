@@ -268,7 +268,7 @@ private:
     }
     void decrsize() {
         if(clsDynArr<T>::_size <= _capacity - _vector) {
-            printf("remove block\n");
+//            printf("remove block\n");
             int last_idx = _matrix->size() - 1;
             _capacity -= _vector;
             _matrix->remove(last_idx);
@@ -306,7 +306,7 @@ public:
         if((index >= 0) && (index <= clsDynArr<T>::_size)) {
             if(clsDynArr<T>::_size == _capacity)
                 resize();
-            printf(" add %i to %i place\n", (int)item, index);
+//            printf(" add %i to %i place\n", (int)item, index);
 
             int row = index / _vector;
             for(int i=clsDynArr<T>::_size / _vector; i > row; --i) {
@@ -322,12 +322,11 @@ public:
     virtual T remove(int index) {
         if((index >= 0) && (index < clsDynArr<T>::_size)) {
             T item = get(index);
-            printf("removed %i (idx = %i)\n", (int)item, index);
+//            printf("removed %i (idx = %i)\n", (int)item, index);
 
             int row = index / _vector;
             _matrix->getPtr(row)->remove(index % _vector);
             clsDynArr<T>::_size--;
-            int rows = clsDynArr<T>::_size / _vector;
             for(int i=row; i < clsDynArr<T>::_size / _vector; ++i) {
                 T val = _matrix->getPtr(i+1)->get(0);
                 _matrix->getPtr(i)->add(val);
