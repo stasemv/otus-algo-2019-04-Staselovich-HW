@@ -339,4 +339,87 @@ public:
     }
 };
 
+template<class T> class clsSpaceArr : public clsMatrixArr<T>
+{
+private:
+//    clsNoobDynArr<clsBlockArr<T> > *_matrix;
+//    void resize() {
+//        clsMatrixArr<T>::_matrix->add(clsBlockArr<T>(clsMatrixArr<T>::_vector));
+//        clsMatrixArr<T>::_capacity += clsMatrixArr<T>::_vector;
+//    }
+//    void decrsize() {
+//        if(clsDynArr<T>::_size <= _capacity - _vector) {
+////            printf("remove block\n");
+//            int last_idx = _matrix->size() - 1;
+//            _capacity -= _vector;
+//            _matrix->remove(last_idx);
+//        }
+//    }
+
+    clsNoobDynArr<T> * getBlock(const int index,
+                                int * const offset) {
+        int idx = index;
+        int limit = clsMatrixArr<T>::_matrix->size();
+        clsBlockArr<T> *block;
+        for(int i=0; i < limit; ++i) {
+            block = clsMatrixArr<T>::_matrix->get(i);
+            idx -= block->size();
+            if(idx < 0)
+                break;
+        }
+        *offset = index - (block->size() + idx);
+        return block;
+    }
+
+public:
+    clsSpaceArr(int vector) : clsMatrixArr<T>(vector) {}
+    clsSpaceArr() : clsSpaceArr(10) { }
+
+    int size() {
+        return clsDynArr<T>::_size;
+    }
+    T get(int index) {
+        if((index >= 0) && (index < clsDynArr<T>::_size)) {
+            clsBlockArr<T> block = _matrix->get(index / _vector);
+            return block.get(index % _vector);
+        }
+        return T();
+    }
+//    void add_i(T item, int index) {
+//        if((index >= 0) && (index <= clsDynArr<T>::_size)) {
+//            if(clsDynArr<T>::_size == _capacity)
+//                resize();
+////            printf(" add %i to %i place\n", (int)item, index);
+
+//            int row = index / _vector;
+//            for(int i=clsDynArr<T>::_size / _vector; i > row; --i) {
+//                int last_idx = _matrix->getPtr(i-1)->size() - 1;
+//                T val = _matrix->getPtr(i-1)->get(last_idx);
+//                _matrix->getPtr(i)->add_i(val, 0);
+//                _matrix->getPtr(i-1)->remove(last_idx);
+//            }
+//            _matrix->getPtr(row)->add_i(item, index % _vector);
+//            clsDynArr<T>::_size++;
+//        }
+//    }
+//    virtual T remove(int index) {
+//        if((index >= 0) && (index < clsDynArr<T>::_size)) {
+//            T item = get(index);
+////            printf("removed %i (idx = %i)\n", (int)item, index);
+
+//            int row = index / _vector;
+//            _matrix->getPtr(row)->remove(index % _vector);
+//            clsDynArr<T>::_size--;
+//            for(int i=row; i < clsDynArr<T>::_size / _vector; ++i) {
+//                T val = _matrix->getPtr(i+1)->get(0);
+//                _matrix->getPtr(i)->add(val);
+//                _matrix->getPtr(i+1)->remove(0);
+//            }
+//            decrsize();
+//            return item;
+//        }
+//        return T();
+//    }
+};
+
 #endif // DYNAMIC_ARRAYS_H
