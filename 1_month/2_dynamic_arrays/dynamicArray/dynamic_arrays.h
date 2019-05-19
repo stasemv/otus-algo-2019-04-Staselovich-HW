@@ -10,7 +10,7 @@ template<class T> class clsDynArr
 protected :
     T *_array;
     int _size;
-    virtual void resize() {}
+    virtual void resize(int index) {}
     virtual void decrsize() {}
 
 public:
@@ -30,19 +30,27 @@ public:
 template<class T> class clsNoobDynArr : public clsDynArr<T>
 {
 protected :
-    void resize() {
+    void resize(int index) {
+        int tail = clsDynArr<T>::_size - index;
         T *newArr = new T[clsDynArr<T>::_size + 1];
-        memcpy(newArr, clsDynArr<T>::_array, clsDynArr<T>::_size*sizeof(T));
+        memcpy(newArr, clsDynArr<T>::_array, index*sizeof(T));
+        memcpy(&newArr[index+1],
+               &(clsDynArr<T>::_array[index]),
+               tail*sizeof(T));
         if(clsDynArr<T>::_array)
             delete[] clsDynArr<T>::_array;
         clsDynArr<T>::_size++;
         clsDynArr<T>::_array = newArr;
     }
-    void decrsize() {
+    void decrsize(int index) {
         if(clsDynArr<T>::_size > 0) {
-            T *newArr = new T[clsDynArr<T>::_size - 1];
             clsDynArr<T>::_size--;
-            memcpy(newArr, clsDynArr<T>::_array, clsDynArr<T>::_size*sizeof(T));
+            int tail = clsDynArr<T>::_size - index;
+            T *newArr = new T[clsDynArr<T>::_size];
+            memcpy(newArr, clsDynArr<T>::_array, index*sizeof(T));
+            memcpy(&newArr[index],
+                   &clsDynArr<T>::_array[index+1],
+                   tail*sizeof(T));
             if(clsDynArr<T>::_array)
                 delete[] clsDynArr<T>::_array;
             clsDynArr<T>::_array = newArr;
@@ -58,7 +66,7 @@ public:
         return clsDynArr<T>::_size;
     }
     void add(T item) {
-        resize();
+        resize(clsDynArr<T>::_size);
         clsDynArr<T>::_array[clsDynArr<T>::_size-1] = item;
     }
     T get( int index) {
@@ -68,27 +76,18 @@ public:
     }
     void add_i(T item, int index) {
         if((index >= 0) && (index <= clsDynArr<T>::_size)) {
-            int tail = clsDynArr<T>::_size - index;
-            resize();
-            memcpy(&(clsDynArr<T>::_array[index+1]),
-                   &(clsDynArr<T>::_array[index]),
-                   tail*sizeof(T));
+            resize(index);
             clsDynArr<T>::_array[index] = item;
         }
     }
     virtual T remove(int index) {
         if((index >= 0) && (index < clsDynArr<T>::_size)) {
             T item = get(index);
-            int tail = clsDynArr<T>::_size - index - 1;
-            memcpy(&clsDynArr<T>::_array[index],
-                   &clsDynArr<T>::_array[index+1],
-                   tail*sizeof(T));
-            decrsize();
+            decrsize(index);
             return item;
         }
         return T();
     }
-
     T* getPtr(int index) {
         if((index >= 0) && (index < clsDynArr<T>::_size))
             return &(clsDynArr<T>::_array[index]);
@@ -205,7 +204,7 @@ private:
     }
 public:
     clsFactorArr(int factor, int init_length) {
-        _init_length - init_length;
+        _init_length = init_length;
         clsDynArr<T>::_array = new T[init_length];
         _factor = factor;
         clsDynArr<T>::_size = 0;

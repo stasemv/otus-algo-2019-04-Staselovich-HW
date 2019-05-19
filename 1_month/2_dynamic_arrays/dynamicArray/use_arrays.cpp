@@ -50,10 +50,10 @@ void useAllArrays()
 //#define _type int
 #define _type double
     int total = 1000;
-//    clsNoobDynArr<_type> _type_noob_dyn_arr;
-//    testAddArrays<_type>("noob", &_type_noob_dyn_arr, total);
-//    testAddIArrays<_type>("noob", &_type_noob_dyn_arr, total/100);
-//    testRemoveIArrays<_type>("noob", &_type_noob_dyn_arr, total/100);
+    clsNoobDynArr<_type> _type_noob_dyn_arr;
+    testAddArrays<_type>("noob", &_type_noob_dyn_arr, total);
+    testAddIArrays<_type>("noob", &_type_noob_dyn_arr, total/100);
+    testRemoveIArrays<_type>("noob", &_type_noob_dyn_arr, total/100);
 
 //    clsBlockArr<_type> _type_block_arr;
 //    testAddArrays<_type>("block", &_type_block_arr, total);
@@ -72,7 +72,7 @@ void useAllArrays()
 //    testRemoveIArrays<_type>("matr", &_type_matr_arr, total/100);
 
     // compare
-    if( 1 ) {
+    if( 0 ) {
         std::ofstream fout("../times.xls");
         clsBlockArr<_type> _type_block_arr(100);
         clsFactorArr<_type> _type_factor_arr;
