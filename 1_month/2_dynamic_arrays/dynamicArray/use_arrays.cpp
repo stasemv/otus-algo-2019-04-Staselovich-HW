@@ -49,7 +49,7 @@ void useAllArrays()
 {
 //#define _type int
 #define _type double
-    int total = 1000;
+    int total = 100;
 //    clsNoobDynArr<_type> _type_noob_dyn_arr;
 //    testAddArrays<_type>("noob", &_type_noob_dyn_arr, total);
 //    testAddIArrays<_type>("noob", &_type_noob_dyn_arr, total/100);
@@ -70,6 +70,14 @@ void useAllArrays()
 //    testAddArrays<_type>("matr", &_type_matr_arr, total);
 //    testAddIArrays<_type>("matr", &_type_matr_arr, total/100);
 //    testRemoveIArrays<_type>("matr", &_type_matr_arr, total/100);
+
+    clsSpaceArr<_type> _type_space_arr(10);
+    testAddArrays<_type>("space", &_type_space_arr, total);
+    _type_space_arr.printArray();
+    testAddIArrays<_type>("space", &_type_space_arr, total/100);
+    _type_space_arr.printArray();
+//    testRemoveIArrays<_type>("space", &_type_space_arr, total*0.9);
+//    _type_space_arr.printArray();
 
     // compare
     if( 1 ) {
