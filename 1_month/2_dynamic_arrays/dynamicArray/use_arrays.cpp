@@ -71,6 +71,14 @@ void useAllArrays()
 //    testAddIArrays<_type>("matr", &_type_matr_arr, total/100);
 //    testRemoveIArrays<_type>("matr", &_type_matr_arr, total/100);
 
+    clsSpaceArr<_type> _type_space_arr(10);
+    testAddArrays<_type>("space", &_type_space_arr, total);
+    _type_space_arr.printArray();
+    testAddIArrays<_type>("space", &_type_space_arr, total/10);
+    _type_space_arr.printArray();
+    testRemoveIArrays<_type>("space", &_type_space_arr, total*0.3);
+    _type_space_arr.printArray();
+
     // compare
     if( 0 ) {
         std::ofstream fout("../times.xls");

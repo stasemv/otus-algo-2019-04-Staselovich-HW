@@ -5,6 +5,8 @@
 #include <cstring>
 #include <stdexcept>
 
+#include <lists.h>
+
 template<class T> class clsDynArr
 {
 protected :
@@ -332,6 +334,157 @@ public:
                 _matrix->getPtr(i+1)->remove(0);
             }
             decrsize();
+            return item;
+        }
+        return T();
+    }
+};
+
+template<class T> class clsSpaceArr : public clsDynArr<T>
+{
+private:
+    int _vector;
+    clsListNode<clsBlockArr<T> > *_matrix;
+    clsListNode<clsBlockArr<T> > *_lastBlock;
+    int _listSize;
+    void resize() {
+        if(_lastBlock->getItem().size() >= _vector) {
+            clsListNode<clsBlockArr<T> > *_newNode = new clsListNode<clsBlockArr<T> >;
+            _lastBlock->setNext(_newNode);
+            _lastBlock = _lastBlock->getNext();
+            _listSize++;
+        }        
+    }
+    void resize(clsListNode<clsBlockArr<T> > *node, int offset) {
+        if(node->getItem().size() >= _vector) {
+            clsListNode<clsBlockArr<T> > *_newNode = new clsListNode<clsBlockArr<T> >;
+            _newNode->setNext(node->getNext());
+            node->setNext(_newNode);
+
+            clsBlockArr<T> *block = node->getItemPtr();
+            clsBlockArr<T> *newBlock = _newNode->getItemPtr();
+            for(int i=offset; i < block->size(); ++i)
+                newBlock->add(block->get(i));
+            for(int i=block->size()-1; i >= offset; --i)
+                block->remove(i);
+
+            _listSize++;
+        }
+    }
+
+//    clsMatrixArr<T>::_matrix->add_i(clsBlockArr<T>(clsMatrixArr<T>::_vector),
+//                                    blockIndex+1);
+//    clsMatrixArr<T>::_capacity += clsMatrixArr<T>::_vector;
+//    clsBlockArr<T> *nextBlock = clsMatrixArr<T>::_matrix->getPtr(blockIndex+1);
+//    for(int i=offset; i < block->size(); ++i)
+//        nextBlock->add(block->get(i));
+//    for(int i=block->size()-1; i >= offset; --i)
+//        block->remove(i);
+
+    void decrsize(clsListNode<clsBlockArr<T> > *node) {
+        if(node->getItemPtr()->size() < 1) {
+            printf("remove block\n");
+            clsListNode<clsBlockArr<T> > *prevNode = _matrix;
+            if(node == _matrix) {
+                if(_matrix->getNext()) {
+                    _matrix = _matrix->getNext();
+                    delete node;
+                    _listSize--;
+                }
+            }
+            else {
+                while(prevNode && (prevNode->getNext() != node))
+                    prevNode = prevNode->getNext();
+                if(prevNode) {
+                    prevNode->setNext(node->getNext());
+                    delete node;
+                    _listSize--;
+                }
+            }
+        }
+    }
+    clsListNode<clsBlockArr<T> > * getNode(const int index,
+                                           int * const offset) {
+        int idx = index;
+        clsListNode<clsBlockArr<T> > *node;
+        clsListNode<clsBlockArr<T> > *prevNode = _matrix;
+        do {
+            node = prevNode;
+            idx -= node->getItemPtr()->size();
+            if(idx < 0)
+                break;
+            prevNode = prevNode->getNext();
+        } while(prevNode != NULL);
+        *offset = node->getItemPtr()->size() + idx;
+        return node;
+    }
+    clsBlockArr<T> * getBlock(const int index,
+                              int * const offset) {
+        clsListNode<clsBlockArr<T> > *node = getNode(index, offset);
+        return node->getItemPtr();
+    }
+
+public:
+    clsSpaceArr(int vector) {
+        _matrix = new clsListNode<clsBlockArr<T> >;
+        _lastBlock  =_matrix;
+        _vector = vector;
+        clsDynArr<T>::_size = 0;
+        _listSize = 0;
+    }
+    clsSpaceArr() : clsSpaceArr(10) {}
+
+    int size() {
+        return clsDynArr<T>::_size;
+    }
+    void add(T item) {
+        resize();
+        _lastBlock->getItemPtr()->add(item);
+        clsDynArr<T>::_size++;
+    }
+    T get(int index) {
+        if((index >= 0) && (index < clsDynArr<T>::_size)) {
+            int offset = 0;
+            clsBlockArr<T> *block = getBlock(index, &offset);
+            return block->get(offset);
+        }
+        return T();
+    }
+    void printArray() {
+        clsListNode<clsBlockArr<T> > *node = _matrix;
+        do {
+            clsBlockArr<T> *block = node->getItemPtr();
+            int n2 = block->size();
+            for(int j=0; j < n2; ++j) {
+                T val = block->get(j);
+                printf("%i\t", (int)val);
+            }
+            printf("\n");
+            node = node->getNext();
+        } while(node != NULL);
+        printf("\n");
+    }
+
+    void add_i(T item, int index) {
+        if((index >= 0) && (index <= clsDynArr<T>::_size)) {
+            int offset = 0;
+            clsListNode<clsBlockArr<T> > *node = getNode(index, &offset);
+            printf(" add %i to %i place\n", (int)item, index);
+            resize(node, offset);
+
+            node->getItemPtr()->add_i(item, offset);
+            clsDynArr<T>::_size++;
+        }
+    }
+    virtual T remove(int index) {
+        if((index >= 0) && (index < clsDynArr<T>::_size)) {
+            int offset = 0;
+            clsListNode<clsBlockArr<T> > *node = getNode(index, &offset);
+            T item = node->getItemPtr()->remove(offset);
+            printf("removed %i (idx = %i)\n", (int)item, index);
+
+            clsDynArr<T>::_size--;
+            decrsize(node);
             return item;
         }
         return T();
