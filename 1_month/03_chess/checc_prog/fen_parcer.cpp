@@ -7,7 +7,7 @@ enmCharType getCharType(char ch)
     if(((ch >= 'a') && (ch <= 'z'))
             || ((ch >= 'A') && (ch <= 'Z')))
         return enmCT_letter;
-    else if((ch >= '1') && (ch <= '9'))
+    else if((ch >= '0') && (ch <= '9'))
         return enmCT_digit;
     else if(ch == '/')
         return enmCT_slash;
@@ -16,33 +16,6 @@ enmCharType getCharType(char ch)
     else if(ch == '-')
         return enmCT_dash;
     return enmCT_unknown;
-}
-
-enmChessman getChessmanType(char ch)
-{
-    switch (ch) {
-    case 'k': return enmChM_king;
-    case 'q': return enmChM_queen;
-    case 'r': return enmChM_rook;
-    case 'b': return enmChM_bishop;
-    case 'n': return enmChM_knight;
-    case 'p': return enmChM_pawn;
-    default:
-        return enmChM_unknown;
-    }
-    return enmChM_unknown;
-}
-
-sctChessman getChessman(char ch)
-{
-    sctChessman man;
-    man.color = enmCC_black;
-    if((ch >= 'A') && (ch <= 'Z')) {
-        man.color = enmCC_white;
-        ch = 'a' + 'A' - ch;
-    }
-    man.type = getChessmanType(ch);
-    return man;
 }
 
 void pushFENParcerLetter(sctFENParcerState *parcer, char ch)
@@ -56,8 +29,9 @@ void pushFENParcerLetter(sctFENParcerState *parcer, char ch)
                 sctChessmanPosition pos =
                 {ul1 << (8*parcer->row + parcer->col),
                  parcer->row, parcer->col};
-                brd->chessmans[brd->chessmansCount] =
-                {man, pos, 1};
+                sctChessmanState cell = {man, pos, 1};
+                brd->field[pos.row][pos.col] = cell;
+                brd->chessmans[brd->chessmansCount] = &brd->field[pos.row][pos.col];
                 brd->chessmansCount++;
             }
             else
@@ -65,6 +39,7 @@ void pushFENParcerLetter(sctFENParcerState *parcer, char ch)
         }
         else
             parcer->state = enmFENPS_error;
+        parcer->col++;
         break;
     case enmFENPS_color:
         enmChessColor clr;
@@ -75,7 +50,7 @@ void pushFENParcerLetter(sctFENParcerState *parcer, char ch)
         }
         if(clr != enmCC_unknown) {
             brd->isWhiteStep = (clr == enmCC_white);
-            parcer->col = (char)clr;
+            parcer->clr = (char)clr;
         }
         else
             parcer->state = enmFENPS_error;
@@ -227,4 +202,100 @@ sctChessBoard parceFEN(std::string fen)
         }
         }
     return parcer.board;
+}
+
+std::string generateFEN(sctChessBoard board)
+{
+    std::string fen;
+    char ch;
+    for(int i=7; i>=0; --i) {
+        int emptyFields = 0;
+        for(int j=0; j<8; ++j) {
+            sctChessmanState *cell = &board.field[i][j];
+            if(cell->man.type == enmChM_empty)
+                emptyFields++;
+            else {
+                if(emptyFields) {
+                    ch = emptyFields + '0';
+                    fen += ch;
+                }
+                ch = getChessmanName(cell->man);
+                fen += ch;
+            }
+            if((j >= 7) && emptyFields){
+                ch = emptyFields + '0';
+                fen += ch;
+            }
+        }
+        if(i != 0)
+            fen += '/';
+    }
+
+    fen += " ";
+    if(board.isWhiteStep)
+        fen += "w";
+    else
+        fen += "b";
+
+    fen += " ";
+    if(board.castlingCount)
+    for(int i=0; i < board.castlingCount; ++i)
+        fen += getChessmanName(board.castling[i]);
+    else
+        fen += "-";
+
+    fen += " ";
+    if((board.enPassant.row == 2) || (board.enPassant.row == 5)) {
+        fen += 'a' + board.enPassant.col;
+        fen += '0' + board.enPassant.row;
+    }
+    else
+        fen += '-';
+
+    fen += " ";
+    char semiSteps[8];
+    sprintf(semiSteps, "%i", board.halfmoveClock);
+    fen += semiSteps;
+
+    fen += " ";
+    char fullSteps[8];
+    sprintf(fullSteps, "%i", board.fullmoveNumber);
+    fen += fullSteps;
+
+    return fen;
+}
+
+sctChessMove parceMove(std::string __move)
+{
+    sctChessMove move;
+    memset(&move, 0, sizeof(move));
+    enmMoveParcerState moveParcer = enmMPS_from_col;
+    for(size_t i=0; i < __move.length(); ++i) {
+        char ch = __move[i];
+        switch (moveParcer) {
+        case enmMPS_from_col :
+            move.from.col = ch - 'a';
+            break;
+        case enmMPS_from_row :
+            move.from.row = ch - '0';
+            break;
+        case enmMPS_to_col :
+            move.to.col = ch - 'a';
+            break;
+        case enmMPS_to_row :
+            move.to.row = ch - '0';
+            break;
+        case enmMPS_newMan :
+            move.newMan = getChessman(ch);
+            break;
+        default :
+            moveParcer = enmMPS_error;
+        }
+        if(moveParcer >= enmMPS_error) {
+            printf("Cannot to parce FEN-string. Error on %lu char\n", i);
+            break;
+        }
+        moveParcer = (enmMoveParcerState)((int)moveParcer + 1);
+    }
+    return move;
 }

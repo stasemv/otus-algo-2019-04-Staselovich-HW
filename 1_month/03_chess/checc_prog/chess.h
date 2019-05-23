@@ -7,15 +7,21 @@
 class clsChessBoard
 {
 private:
-    sctChessBoard board;
-    std::string fen;
+    sctChessBoard _board;
+    std::string _fen;
 
     void resetBoard();
     std::string getFENByState(sctChessBoard *b);
-    sctChessBoard getStateByFEN(std::string fen);
+    sctChessBoard getStateByFEN(std::string __fen);
+    int doMove(sctChessMove __move);
 public:
     clsChessBoard();
+    void move(std::string __move);
 
+    sctChessBoard getBoard();
+    void printBoard();
+    void printFEN();
+    void setFEN(std::string __fen);
 
 };
 

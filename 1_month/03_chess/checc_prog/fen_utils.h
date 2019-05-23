@@ -2,13 +2,14 @@
 #define FEN_UTILS_H
 
 typedef enum enmChessman {
-    enmChM_unknown = 0,
+    enmChM_empty = 0,   // пустая клетка
     enmChM_king,    // король
     enmChM_queen,   // ферзь
     enmChM_rook,    // ладья
     enmChM_bishop,  // слон
     enmChM_knight,  // конь
     enmChM_pawn,    // пешка
+    enmChM_unknown,
     enmChM_amount
 } enmChessman;
 
@@ -26,8 +27,8 @@ typedef struct sctChessman {
 
 typedef struct sctChessmanPosition {
     unsigned long num;
-    char row;
-    char col;
+    int  row;
+    int  col;
 } sctChessmanPosition;
 
 typedef struct sctChessmanState {
@@ -37,8 +38,9 @@ typedef struct sctChessmanState {
 } sctChessmanState;
 
 typedef struct sctChessBoard {
-    sctChessmanState chessmans[64]; // состояния фигур
+    sctChessmanState *chessmans[64]; // состояния фигур
     int chessmansCount; // кол-во фигур на доске
+    sctChessmanState field[8][8];
 
     bool isWhiteStep;   // ход белых
 
@@ -52,6 +54,12 @@ typedef struct sctChessBoard {
     int fullmoveNumber; // fullmove number
 } sctChessBoard;
 
+typedef struct sctChessMove {
+    sctChessmanPosition from;
+    sctChessmanPosition to;
+    sctChessman newMan;
+} sctChessMove;
+
 typedef enum enmCharType {
     enmCT_unknown = 0,
     enmCT_letter,
@@ -61,5 +69,9 @@ typedef enum enmCharType {
     enmCT_dash,
     enmCT_amount
 } enmCharType;
+
+enmChessman getChessmanType(char ch);
+char getChessmanName(sctChessman man);
+sctChessman getChessman(char ch);
 
 #endif // FEN_UTILS_H
