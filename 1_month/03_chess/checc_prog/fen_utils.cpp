@@ -48,3 +48,8 @@ sctChessman getChessman(char ch)
     return man;
 }
 
+bool isChessmanValid(enmChessman __type) {
+    return (__type != enmChM_empty)
+            && (__type != enmChM_unknown)
+            && (__type != enmChM_amount);
+}

@@ -38,7 +38,7 @@ typedef struct sctFENParcerState {
 } sctFENParcerState;
 
 sctChessBoard parceFEN(std::string fen);
-std::string generateFEN(sctChessBoard board);
+std::string generateFEN(sctChessBoard *board);
 
 typedef enum enmMoveParcerState {
     enmMPS_from_col = 0,

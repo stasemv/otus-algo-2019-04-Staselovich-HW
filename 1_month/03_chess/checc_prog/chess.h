@@ -18,7 +18,8 @@ public:
     clsChessBoard();
     void move(std::string __move);
 
-    sctChessBoard getBoard();
+    sctChessBoard *getBoard();
+    std::string getFEN();
     void printBoard();
     void printFEN();
     void setFEN(std::string __fen);

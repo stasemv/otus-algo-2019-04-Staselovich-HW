@@ -73,5 +73,6 @@ typedef enum enmCharType {
 enmChessman getChessmanType(char ch);
 char getChessmanName(sctChessman man);
 sctChessman getChessman(char ch);
+bool isChessmanValid(enmChessman __type);
 
 #endif // FEN_UTILS_H

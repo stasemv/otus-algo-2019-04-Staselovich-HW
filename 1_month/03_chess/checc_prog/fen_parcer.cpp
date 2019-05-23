@@ -204,20 +204,21 @@ sctChessBoard parceFEN(std::string fen)
     return parcer.board;
 }
 
-std::string generateFEN(sctChessBoard board)
+std::string generateFEN(sctChessBoard *board)
 {
     std::string fen;
     char ch;
     for(int i=7; i>=0; --i) {
         int emptyFields = 0;
         for(int j=0; j<8; ++j) {
-            sctChessmanState *cell = &board.field[i][j];
+            sctChessmanState *cell = &board->field[i][j];
             if(cell->man.type == enmChM_empty)
                 emptyFields++;
             else {
                 if(emptyFields) {
                     ch = emptyFields + '0';
                     fen += ch;
+                    emptyFields = 0;
                 }
                 ch = getChessmanName(cell->man);
                 fen += ch;
@@ -232,34 +233,34 @@ std::string generateFEN(sctChessBoard board)
     }
 
     fen += " ";
-    if(board.isWhiteStep)
+    if(board->isWhiteStep)
         fen += "w";
     else
         fen += "b";
 
     fen += " ";
-    if(board.castlingCount)
-    for(int i=0; i < board.castlingCount; ++i)
-        fen += getChessmanName(board.castling[i]);
+    if(board->castlingCount)
+    for(int i=0; i < board->castlingCount; ++i)
+        fen += getChessmanName(board->castling[i]);
     else
         fen += "-";
 
     fen += " ";
-    if((board.enPassant.row == 2) || (board.enPassant.row == 5)) {
-        fen += 'a' + board.enPassant.col;
-        fen += '0' + board.enPassant.row;
+    if((board->enPassant.row == 2) || (board->enPassant.row == 5)) {
+        fen += 'a' + board->enPassant.col;
+        fen += '0' + board->enPassant.row;
     }
     else
         fen += '-';
 
     fen += " ";
     char semiSteps[8];
-    sprintf(semiSteps, "%i", board.halfmoveClock);
+    sprintf(semiSteps, "%i", board->halfmoveClock);
     fen += semiSteps;
 
     fen += " ";
     char fullSteps[8];
-    sprintf(fullSteps, "%i", board.fullmoveNumber);
+    sprintf(fullSteps, "%i", board->fullmoveNumber);
     fen += fullSteps;
 
     return fen;
@@ -277,13 +278,13 @@ sctChessMove parceMove(std::string __move)
             move.from.col = ch - 'a';
             break;
         case enmMPS_from_row :
-            move.from.row = ch - '0';
+            move.from.row = ch - '1';
             break;
         case enmMPS_to_col :
             move.to.col = ch - 'a';
             break;
         case enmMPS_to_row :
-            move.to.row = ch - '0';
+            move.to.row = ch - '1';
             break;
         case enmMPS_newMan :
             move.newMan = getChessman(ch);
