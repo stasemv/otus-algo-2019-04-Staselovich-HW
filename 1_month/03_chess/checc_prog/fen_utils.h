@@ -44,8 +44,11 @@ typedef struct sctChessBoard {
 
     bool isWhiteStep;   // ход белых
 
-    char castlingCount; // кол-во возможных рокировок
-    sctChessman castling[4]; // возможные рокировки
+    // возможные рокировки
+    sctChessman castl_K;
+    sctChessman castl_Q;
+    sctChessman castl_k;
+    sctChessman castl_q;
 
     sctChessmanPosition enPassant;  // взятие на проходе
 
@@ -70,9 +73,14 @@ typedef enum enmCharType {
     enmCT_amount
 } enmCharType;
 
+const sctChessman emptyChessMan = {enmChM_empty, enmCC_unknown};
+const unsigned long ul1 = 0x1;
+
 enmChessman getChessmanType(char ch);
 char getChessmanName(sctChessman man);
 sctChessman getChessman(char ch);
 bool isChessmanValid(enmChessman __type);
+int getChessmanAsInt(enmChessman type, enmChessColor clr);
+void clearBoard(sctChessBoard *board);
 
 #endif // FEN_UTILS_H

@@ -1,7 +1,5 @@
 #include "fen_parcer.h"
 
-unsigned long ul1 = 0x1;
-
 enmCharType getCharType(char ch)
 {
     if(((ch >= 'a') && (ch <= 'z'))
@@ -55,15 +53,27 @@ void pushFENParcerLetter(sctFENParcerState *parcer, char ch)
         else
             parcer->state = enmFENPS_error;
         break;
-    case enmFENPS_castling:
-        if(brd->castlingCount < 4) {
-            sctChessman man = getChessman(ch);
-            brd->castling[(int)brd->castlingCount] = man;
-            brd->castlingCount++;
-        }
-        else
+    case enmFENPS_castling: {
+        sctChessman man = getChessman(ch);
+        switch (getChessmanAsInt(man.type, man.color)) {
+        case (enmChM_king << 2) | enmCC_white :
+            brd->castl_K = man;
+            break;
+        case (enmChM_queen << 2) | enmCC_white :
+            brd->castl_Q = man;
+            break;
+        case (enmChM_king << 2) | enmCC_black :
+            brd->castl_k = man;
+            break;
+        case (enmChM_queen << 2) | enmCC_black :
+            brd->castl_q = man;
+            break;
+        default :
             parcer->state = enmFENPS_error;
+            break;
+        }
         break;
+    }
     case enmFENPS_enPassant:
         if(brd->enPassant.col < 0)
             brd->enPassant.col = ch - 'a';
@@ -85,18 +95,21 @@ void pushFENParcerDigit(sctFENParcerState *parcer, int num)
         break;
     case enmFENPS_enPassant:
         if(parcer->board.enPassant.row < 0) {
-            parcer->board.enPassant.row = num;
+            parcer->board.enPassant.row = num - 1;
             parcer->board.enPassant.num =
-                    ul1 << (8*parcer->board.enPassant.row + num);
+                    ul1 << (8*parcer->board.enPassant.row
+                            + parcer->board.enPassant.col);
         }
         else
             parcer->state = enmFENPS_error;
         break;
     case enmFENPS_halfmove:
-        parcer->board.halfmoveClock = num;
+        parcer->board.halfmoveClock *= 10;
+        parcer->board.halfmoveClock += num;
         break;
     case enmFENPS_fullmove:
-        parcer->board.fullmoveNumber = num;
+        parcer->board.fullmoveNumber *= 10;
+        parcer->board.fullmoveNumber += num;
         break;
     case enmFENPS_color:
     case enmFENPS_castling:
@@ -138,8 +151,12 @@ void pushFENParcerSpace(sctFENParcerState *parcer)
             parcer->state = enmFENPS_error;
         break;
     case enmFENPS_color:
-        if(parcer->clr != 0)
+        if(parcer->clr != 0) {
             parcer->state = enmFENPS_castling;
+            parcer->board.castl_K = parcer->board.castl_Q =
+                    parcer->board.castl_k = parcer->board.castl_q =
+            emptyChessMan;
+        }
         else
             parcer->state = enmFENPS_error;
         break;
@@ -148,9 +165,11 @@ void pushFENParcerSpace(sctFENParcerState *parcer)
         break;
     case enmFENPS_enPassant:
         parcer->state = enmFENPS_halfmove;
+        parcer->board.halfmoveClock = 0;
         break;
     case enmFENPS_halfmove:
         parcer->state = enmFENPS_fullmove;
+        parcer->board.fullmoveNumber = 0;
         break;
     case enmFENPS_fullmove:
         break;
@@ -163,7 +182,9 @@ void pushFENParcerDash(sctFENParcerState *parcer)
 {
     switch (parcer->state) {
     case enmFENPS_castling:
-        parcer->board.castlingCount = 0;
+        parcer->board.castl_K = parcer->board.castl_Q =
+                parcer->board.castl_k = parcer->board.castl_q =
+        emptyChessMan;
         break;
     case enmFENPS_enPassant:
         parcer->board.enPassant.row =
@@ -182,6 +203,7 @@ sctChessBoard parceFEN(std::string fen)
 {
     // parser
     sctFENParcerState parcer;
+    clearBoard(&parcer.board);
     for(size_t i=0; i < fen.length(); ++i) {
         char ch = fen[i];
         enmCharType chType = getCharType(ch);
@@ -197,7 +219,7 @@ sctChessBoard parceFEN(std::string fen)
             break;
         }
         if(parcer.state == enmFENPS_error) {
-            printf("Cannot to parce FEN-string. Error on %lu char\n", i);
+            printf("Cannot to parce FEN-string. Error on %lu char is %c\n", i, ch);
             break;
         }
         }
@@ -239,16 +261,19 @@ std::string generateFEN(sctChessBoard *board)
         fen += "b";
 
     fen += " ";
-    if(board->castlingCount)
-    for(int i=0; i < board->castlingCount; ++i)
-        fen += getChessmanName(board->castling[i]);
-    else
-        fen += "-";
+    std::string castl = "";
+    sctChessman *man = &board->castl_K;
+    for(int i = 0; i < 4; ++i, man++)
+        if(isChessmanValid(man->type))
+            castl += getChessmanName(*man);
+    if(castl.length() < 1)
+        castl = "-";
+    fen += castl;
 
     fen += " ";
     if((board->enPassant.row == 2) || (board->enPassant.row == 5)) {
         fen += 'a' + board->enPassant.col;
-        fen += '0' + board->enPassant.row;
+        fen += '1' + board->enPassant.row;
     }
     else
         fen += '-';

@@ -1,5 +1,7 @@
 #include "fen_utils.h"
 
+#include <cstring>
+
 enmChessman getChessmanType(char ch)
 {
     switch (ch) {
@@ -52,4 +54,18 @@ bool isChessmanValid(enmChessman __type) {
     return (__type != enmChM_empty)
             && (__type != enmChM_unknown)
             && (__type != enmChM_amount);
+}
+
+int getChessmanAsInt(enmChessman type, enmChessColor clr)
+{
+    return (type << 2) | clr;
+}
+
+void clearBoard(sctChessBoard *board)
+{
+    memset(board, 0, sizeof(sctChessBoard));
+    for(int i=0; i<8; ++i)
+        for(int j=0; j<8; ++j)
+            board->field[i][j].pos = {ul1 << (8*i + j), i, j};
+    board->enPassant.col = board->enPassant.row = -1;
 }

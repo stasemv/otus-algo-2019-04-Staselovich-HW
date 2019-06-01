@@ -5,10 +5,11 @@
 
 int main()
 {
+//    system("mode con cols=100 lines=50");
     test_chess();
 //    testBits();
 //    use_lists();
-    std::cout << "Hello World!" << std::endl;
+    std::cout << "Done!" << std::endl;
     return 0;
 }
 
