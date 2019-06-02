@@ -25,6 +25,13 @@ void clsChessBoard::resetBoard()
     _board = getStateByFEN(_fen);
 }
 
+void moving(sctChessmanState *from, sctChessmanState *to)
+{
+    to->man = from->man;
+    from->man = emptyChessMan;
+    to->isNotMoved = false;
+}
+
 int clsChessBoard::doMove(sctChessMove __move)
 {
     sctChessmanState *cellFrom = &_board.field[__move.from.row][__move.from.col];
@@ -35,7 +42,7 @@ int clsChessBoard::doMove(sctChessMove __move)
         return 1;
 
     bool isPawn = (cellFrom->man.type == enmChM_pawn);
-    bool isBitted = isChessmanValid(cellTo->man.type);
+    bool isBitted = false;
 
     // Фиксация битого поля
     int row_eP = -1;
@@ -51,35 +58,60 @@ int clsChessBoard::doMove(sctChessMove __move)
                     && (cellTo->pos.row == 4))
                 row_eP = 5;
     }
-    bool is_eP = false;
+    bool has_eP = false;
     if(row_eP > -1) {
         sctChessman *enemy;
         if(col_eP > 0) {
             enemy = &_board.field[cellTo->pos.row][col_eP - 1].man;
             if((enemy->type == enmChM_pawn)
                     && (enemy->color != cellFrom->man.color))
-                is_eP = true;
+                has_eP = true;
         }
         if(col_eP < 7) {
             enemy = &_board.field[cellTo->pos.row][col_eP + 1].man;
             if((enemy->type == enmChM_pawn)
                     && (enemy->color != cellFrom->man.color))
-                is_eP = true;
+                has_eP = true;
         }
     }
-    // Взятие на проходе
-    if(_board.enPassant.col > -1)
-        if()
 
-    if(is_eP)
+    bool isMoved = false;
+    // Взятие на проходе
+    if(isPawn && (_board.enPassant.col > -1))
+        if((cellTo->pos.row == _board.enPassant.row)
+                && (cellTo->pos.col == _board.enPassant.col)){
+            _board.field[cellFrom->pos.row][cellTo->pos.col].man = emptyChessMan;
+            moving(cellFrom, cellTo);
+            isMoved = true;
+            isBitted = true;
+        }
+
+    if(has_eP)
         _board.enPassant = {0, row_eP, col_eP};
     else
         _board.enPassant.col = _board.enPassant.row = -1;
 
+    // Рокировка
+    if((cellFrom->man.type == enmChM_king)
+            && (abs(cellFrom->pos.col - cellTo->pos.col) == 2)) {
+        int rook_col;
+        if(cellTo->pos.col > cellFrom->pos.col)
+            rook_col = 7;
+        else
+            rook_col = 0;
+        sctChessmanState *rook = &_board.field[cellFrom->pos.row][rook_col];
+        sctChessmanState *rook_end =
+                &_board.field[cellFrom->pos.row][(cellFrom->pos.col + cellTo->pos.col) / 2];
+        moving(cellFrom, cellTo);
+        moving(rook, rook_end);
+        isMoved = true;
+    }
+
     // Перемещение + взятие
-    cellTo->man = cellFrom->man;
-    cellFrom->man = {enmChM_empty, enmCC_unknown};
-    cellTo->isNotMoved = false;
+    if(!isMoved) {
+        moving(cellFrom, cellTo);
+        isBitted = true;
+    }
 
     // Превращение пешки
     if(isChessmanValid(__move.newMan.type))
@@ -98,9 +130,11 @@ int clsChessBoard::doMove(sctChessMove __move)
             if(isChessmanValid(man->type)) {
                 row = (man->color == enmCC_white) ? 0 : 7;
                 col = (man->type == enmChM_king) ? 7 : 0;
-                sctChessmanState *king = &_board.field[row][3];
+                sctChessmanState *king = &_board.field[row][4];
                 sctChessmanState *rook = &_board.field[row][col];
-                if(!king->isNotMoved || !rook->isNotMoved)
+                if((king->man.type == enmChM_empty)
+                        || (rook->man.type == enmChM_empty)
+                        || !king->isNotMoved || !rook->isNotMoved)
                     *man = emptyChessMan;
             }
     }
