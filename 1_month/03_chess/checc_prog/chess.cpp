@@ -36,8 +36,8 @@ int clsChessBoard::doMove(sctChessMove __move)
 {
     sctChessmanState *cellFrom = &_board.field[__move.from.row][__move.from.col];
     sctChessmanState *cellTo = &_board.field[__move.to.row][__move.to.col];
-    if(cellFrom->man.color == cellTo->man.color)
-        return 1;
+//    if(cellFrom->man.color == cellTo->man.color)
+//        return 1;
     if(!isChessmanValid(cellFrom->man.type))
         return 1;
 
@@ -108,9 +108,11 @@ int clsChessBoard::doMove(sctChessMove __move)
     }
 
     // Перемещение + взятие
-    if(!isMoved) {
+    if(!isMoved)
+    if(!((cellFrom->pos.row == cellTo->pos.row)
+         && (cellFrom->pos.col == cellTo->pos.col))){
+        isBitted = cellTo->man.type != enmChM_empty;
         moving(cellFrom, cellTo);
-        isBitted = true;
     }
 
     // Превращение пешки
