@@ -18,10 +18,10 @@ void test_sorts()
 //    printHeap<double>(array, dim, fout);
 
     printArray<double>(array, dim, fout, "origin:");
-    mergeSort<double>(array, dim);
-    printArray<double>(array, dim, fout, "sorted");
 //    mergeSort<double>(array, dim);
 //    printArray<double>(array, dim, fout, "sorted");
+    quickSort<double>(array, 0, dim);
+    printArray<double>(array, dim, fout, "sorted");
 
     delete array;
 }

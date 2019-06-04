@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <cstring>
+#include <stdlib.h>
 
 #include "trees.h"
 
@@ -50,7 +51,7 @@ void printHeap(T *arr, int dim, FILE *fout, const char *title) {
 }
 
 template<class T>
-void swapHeapItems(T *arr, int ai, int bi)
+void swapItems(T *arr, int ai, int bi)
 {
     T buf = arr[ai];
     arr[ai] = arr[bi];
@@ -68,7 +69,7 @@ void heapDrown(T *arr, int idx, int dim)
     if((right < dim) && (arr[right] > arr[largest]))
         largest = right;
     if(largest != idx) {
-        swapHeapItems<T>(arr, idx, largest);
+        swapItems<T>(arr, idx, largest);
         heapDrown<T>(arr, largest, dim);
     }
 }
@@ -85,7 +86,7 @@ void heapSort(T *arr, int dim)
 {
     buildHeap<T>(arr, dim);
     for(int i=dim-1; i > 0; --i) {
-        swapHeapItems(arr, 0, i);
+        swapItems(arr, 0, i);
         heapDrown(arr, 0, i);
     }
 }
@@ -148,12 +149,26 @@ void mergeSort(T *arr, int dim)
     partialMergeSort(arr, dim, 0, dim);
 }
 
+template<class T>
+int partition(T *arr, int start, int end)
+{
+    int limIdx = start + rand() % (end - start); // случайный индекс
+    T limit = arr[limIdx];
+    int lower = start - 1;
+    for(int bigger = start; bigger < end; ++bigger)
+        if(arr[bigger] <= limit)
+            swapItems(arr, ++lower, bigger);
+    return lower + 1;
+}
 
-
-
-
-
-
-
+template<class T>
+void quickSort(T *arr, int start, int end)
+{
+    if((end - start) < 2)
+        return;
+    int med = partition(arr, start, end);
+    quickSort(arr, start, med);
+    quickSort(arr, med, end);
+}
 
 #endif // TREE_SORTS_H
