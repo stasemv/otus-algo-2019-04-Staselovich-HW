@@ -14,12 +14,25 @@ void getRaisingArray(double *array, const int dim)
         array[i] = (double)i / (double)dim;
 }
 
+double floatRand()
+{
+    return (double)rand()/(double)RAND_MAX;
+}
+
+int randIndex(int dim)
+{
+    return (int)((floatRand() + floatRand()/(double)RAND_MAX)
+                 * (double)(dim-1)) % dim;
+}
+
 void shuffleArray(double *array, const int dim,
                   const int shuffle_count)
 {
     for(int i=0; i < shuffle_count; ++i) {
-        int i1 = rand() % dim;
-        int i2 = rand() % dim;
+//        int i1 = rand() % dim;
+//        int i2 = rand() % dim;
+        int i1 = randIndex(dim);
+        int i2 = randIndex(dim);
         double buf = array[i1];
         array[i1] = array[i2];
         array[i2] = buf;
@@ -42,17 +55,17 @@ double sortArray(double *array, const int dim,
     return time;
 }
 
-void printArray(double *array, const int dim)
+void printArray(double *array, const int dim, FILE *fout)
 {
     int printCount = 0;
     for(int i=0; i < dim; ++i) {
-        printf("%.6lf\t", array[i]);
+        fprintf(fout, "%.6lf\t", array[i]);
         if(++printCount >= 10) {
-            printf("\n");
+            fprintf(fout, "\n");
             printCount = 0;
         }
     }
-    printf("\n");
+    fprintf(fout, "\n");
 }
 
 void testSort(FILE *fout, void sortFunc(double*, int), const char* name)
@@ -105,6 +118,12 @@ void testSort(FILE *fout, void sortFunc(double*, int), const char* name)
             time = 0.0;
             for(int sub=0; sub < iterations; ++sub) {
                 shuffleArray(array, dimention, shaffled);
+                if(0)
+                if(isLast) {
+                    FILE *fout = fopen("arrayLast.xls", "w");
+                    printArray(array, dimention, stdout);
+                    fclose(fout);
+                }
                 time += sortArray(array, dimention, sortFunc);
                 printf("time = %f\n", time);
             }
