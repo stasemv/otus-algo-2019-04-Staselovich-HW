@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <cstring>
+#include <stdlib.h>
 
 #include "trees.h"
 
@@ -12,15 +13,16 @@ int heapRight(int index);
 int heapParent(int index);
 
 template<class T>
-void printArray(T *arr, int dim, FILE *fout) {
+void printArray(T *arr, int dim, FILE *fout, const char *title) {
+    fprintf(fout, "%s\n", title);
     for(int i=0; i < dim; ++i)
         fprintf(fout, "%.6lf\t", (double)(arr[i]));
     fprintf(fout, "\n");
 }
 
 template<class T>
-void printHeap(T *arr, int dim, FILE *fout) {
-    printArray<T>(arr, dim, fout);
+void printHeap(T *arr, int dim, FILE *fout, const char *title) {
+    printArray<T>(arr, dim, fout, title);
     int depth = log(dim)/log(2) + 1;
     int length = 4;
     char *emptyValue = new char[length+3];
@@ -43,14 +45,13 @@ void printHeap(T *arr, int dim, FILE *fout) {
                 fprintf(fout, "%s", emptyValue);
         }
         idx += pow(2, i);
-
         fprintf(fout, "\n");
     }
     delete[] emptyValue;
 }
 
 template<class T>
-void swapHeapItems(T *arr, int ai, int bi)
+void swapItems(T *arr, int ai, int bi)
 {
     T buf = arr[ai];
     arr[ai] = arr[bi];
@@ -68,7 +69,7 @@ void heapDrown(T *arr, int idx, int dim)
     if((right < dim) && (arr[right] > arr[largest]))
         largest = right;
     if(largest != idx) {
-        swapHeapItems<T>(arr, idx, largest);
+        swapItems<T>(arr, idx, largest);
         heapDrown<T>(arr, largest, dim);
     }
 }
@@ -85,7 +86,7 @@ void heapSort(T *arr, int dim)
 {
     buildHeap<T>(arr, dim);
     for(int i=dim-1; i > 0; --i) {
-        swapHeapItems(arr, 0, i);
+        swapItems(arr, 0, i);
         heapDrown(arr, 0, i);
     }
 }
@@ -103,5 +104,71 @@ public:
         index = idx;
     }
 };
+
+template<class T>
+void mergeArrays(T *arr,
+                 int start, int middle, int end)
+{
+    int i = start;
+    int j = middle;
+    int size = end - start;
+    T *newarr = new T[size];
+    for(int k = 0; k < size; ++k) {
+        if(i != middle) {
+            if(j != end) {
+                if(arr[i] < arr[j])
+                    newarr[k] = arr[i++];
+                else
+                    newarr[k] = arr[j++];
+            }
+            else
+                newarr[k] = arr[i++];
+        }
+        else
+            newarr[k] = arr[j++];
+    }
+    memcpy(&arr[start], &newarr[0], size*sizeof(T));
+    delete[] newarr;
+}
+
+template<class T>
+void partialMergeSort(T *arr, int dim,
+                      int start, int end)
+{
+    if((end - start) < 2)
+        return;
+    int middle = (start + end) / 2;
+    partialMergeSort(arr, dim, start, middle);
+    partialMergeSort(arr, dim, middle, end);
+    mergeArrays<T>(arr, start, middle, end);
+}
+
+template<class T>
+void mergeSort(T *arr, int dim)
+{
+    partialMergeSort(arr, dim, 0, dim);
+}
+
+template<class T>
+int partition(T *arr, int start, int end)
+{
+    int limIdx = start + rand() % (end - start); // случайный индекс
+    T limit = arr[limIdx];
+    int lower = start - 1;
+    for(int bigger = start; bigger < end; ++bigger)
+        if(arr[bigger] <= limit)
+            swapItems(arr, ++lower, bigger);
+    return lower + 1;
+}
+
+template<class T>
+void quickSort(T *arr, int start, int end)
+{
+    if((end - start) < 2)
+        return;
+    int med = partition(arr, start, end);
+    quickSort(arr, start, med);
+    quickSort(arr, med, end);
+}
 
 #endif // TREE_SORTS_H
