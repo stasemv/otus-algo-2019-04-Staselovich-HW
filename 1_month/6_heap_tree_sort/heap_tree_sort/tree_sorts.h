@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include "trees.h"
+#include "../../2_dynamic_arrays/dynamicArray/lists.h"
 
 int heapLeft(int index);
 int heapRight(int index);
@@ -14,7 +15,7 @@ int heapParent(int index);
 
 template<class T>
 void printArray(T *arr, int dim, FILE *fout, const char *title) {
-    fprintf(fout, "%s\n", title);
+    fprintf(fout, "%s:\n", title);
     for(int i=0; i < dim; ++i)
         fprintf(fout, "%.6lf\t", (double)(arr[i]));
     fprintf(fout, "\n");
@@ -169,6 +170,80 @@ void quickSort(T *arr, int start, int end)
     int med = partition(arr, start, end);
     quickSort(arr, start, med);
     quickSort(arr, med, end);
+}
+
+typedef struct sctSortRun {
+    int start;
+    int length;
+} sctSortRun;
+
+enum enmRunMode {
+    enmRM_new,
+    enmRM_raise,
+    enmRM_fall,
+    enmRM_amount
+};
+
+template<class T>
+void reflectArray(T *arr, int start, int end)
+{
+    for(int i=0; i < (end - start + 1) / 2; ++i)
+        swapItems<T>(arr, start+i, end-i);
+}
+
+template<class T>
+void timSort(T *arr, int dim)
+{
+    clsQueue<int> runs;
+    int run = 0;
+    enmRunMode runMode = enmRM_new;
+    for(int i=1; i < dim; ++i)
+        switch(runMode) {
+        case enmRM_new :
+            if(arr[i] >= arr[run])
+                runMode = enmRM_raise;
+            else
+                runMode = enmRM_fall;
+            break;
+        case enmRM_raise :
+            if(arr[i] < arr[i-1]) {
+                runs.enqueue(run);
+                run = i;
+                runMode = enmRM_new;
+            }
+            break;
+        case enmRM_fall :
+            if(arr[i] > arr[i-1]) {
+                reflectArray<T>(arr, run, i-1);
+                runs.enqueue(run);
+                run = i;
+                runMode = enmRM_new;
+            }
+            break;
+        default :
+            break;
+        }
+    if(runMode == enmRM_fall)
+        reflectArray<T>(arr, run, dim-1);
+    runs.enqueue(run);
+
+    printArray(arr, dim, stdout, "runned array");
+
+    // merge
+    int runStart = runs.dequeue();
+    int runMiddle = runStart;
+    if(!runs.isEmpty())
+        runMiddle = runs.dequeue();
+    while(!runs.isEmpty()) {
+        int runEnd = runs.dequeue();
+        mergeArrays<T>(arr, runStart, runMiddle, runEnd);
+        runMiddle = runEnd;
+    }
+    if(runMiddle != runStart)
+        mergeArrays<T>(arr, runStart, runMiddle, dim);
+
+    printArray(arr, dim, stdout, "sorted array");
+
 }
 
 #endif // TREE_SORTS_H

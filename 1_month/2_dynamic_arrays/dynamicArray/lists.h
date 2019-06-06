@@ -61,7 +61,7 @@ public:
 };
 
 template<class T>
-class clsQueue : clsListNode<T>
+class clsQueue : protected clsListNode<T>
 {
 private:
     clsListNode<T> *head;
