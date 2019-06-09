@@ -10,10 +10,12 @@ MOC_DIR = ../bin/.moc
 SOURCES += main.cpp \
     test_sorts.cpp \
     tree_sorts.cpp \
-    trees.cpp
+    trees.cpp \
+    special_sorts.cpp
 
 HEADERS += \
     test_sorts.h \
     tree_sorts.h \
-    trees.h
+    trees.h \
+    special_sorts.h
 
