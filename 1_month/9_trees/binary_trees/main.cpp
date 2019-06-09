@@ -1,10 +1,12 @@
 #include <iostream>
 
-using namespace std;
+#include "test_trees.h"
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    test_trees();
+
+    std::cout << "Done!" << std::endl;
     return 0;
 }
 

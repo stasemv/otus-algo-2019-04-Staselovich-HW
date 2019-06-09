@@ -6,7 +6,6 @@
 #include <cstring>
 #include <stdlib.h>
 
-#include "trees.h"
 #include "../../2_dynamic_arrays/dynamicArray/lists.h"
 
 int heapLeft(int index);
@@ -92,19 +91,19 @@ void heapSort(T *arr, int dim)
     }
 }
 
-template<class T>
-class clsHeapItem : clsBinTreeItem<T>
-{
-protected:
-    int index;
-public:
-    clsHeapItem() : clsBinTreeItem<T>() {
-        index = 0;
-    }
-    clsHeapItem(T data, int idx) : clsBinTreeItem<T>(data) {
-        index = idx;
-    }
-};
+//template<class T>
+//class clsHeapItem : clsBinTreeItem<T>
+//{
+//protected:
+//    int index;
+//public:
+//    clsHeapItem() : clsBinTreeItem<T>() {
+//        index = 0;
+//    }
+//    clsHeapItem(T data, int idx) : clsBinTreeItem<T>(data) {
+//        index = idx;
+//    }
+//};
 
 template<class T>
 void mergeArrays(T *arr,
