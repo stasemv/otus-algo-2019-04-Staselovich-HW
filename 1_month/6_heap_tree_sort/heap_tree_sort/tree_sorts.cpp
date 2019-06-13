@@ -13,7 +13,7 @@ int heapRight(int index)
 
 int heapParent(int index)
 {
-    return index / 2;
+    return (index-1) / 2;
 }
 
 
