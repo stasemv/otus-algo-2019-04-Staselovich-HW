@@ -13,11 +13,11 @@ void test_sorts()
         array[i] = rand()/(double)RAND_MAX;
 
     FILE *fout = stdout;
-//    printHeap<double>(array, dim, fout);
+//    printHeap<double>(array, dim, fout, "origin");
 //    buildHeap<double>(array, dim);
-//    printHeap<double>(array, dim, fout);
+//    printHeap<double>(array, dim, fout, "heaped");
 //    heapSort<double>(array, dim);
-//    printHeap<double>(array, dim, fout);
+//    printHeap<double>(array, dim, fout, "sorted");
 
 //    printArray<double>(array, dim, fout, "origin");
 //    mergeSort<double>(array, dim);

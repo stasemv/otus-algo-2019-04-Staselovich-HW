@@ -7,31 +7,110 @@ template<class T>
 class clsListNode
 {
 protected:
-    T data;
-    clsListNode<T> *next;
+    clsListNode<T> *_next;
+    T _data;
 public:
     clsListNode() {
-        next = NULL;
+        _next = NULL;
     }
-    clsListNode(T &item) {
-        data = item;
-        next = NULL;
+    clsListNode(T *__item) {
+        _data = *__item;
+        _next = NULL;
     }
-    clsListNode(T &item, clsListNode<T> *_next) {
-        data = item;
-        next = _next;
+    clsListNode(T *__item, clsListNode<T> *__next) {
+        _data = *__item;
+        _next = __next;
     }
     T getItem() {
-        return data;
+        return _data;
     }
     T *getItemPtr() {
-        return &data;
+        return &_data;
     }
     clsListNode<T> * getNext() {
-        return next;
+        return _next;
     }
-    void setNext(clsListNode<T> *_next) {
-        next = _next;
+    void setNext(clsListNode<T> *__next) {
+        _next = __next;
+    }
+};
+
+template<class T>
+class clsList
+{
+protected:
+    clsListNode<T> *_head;
+    clsListNode<T> *_tail;
+    void deleteNode(clsListNode<T> *node) {
+        if(node) {
+            clsListNode<T> *next = node->getNext();
+            if(next)
+                deleteNode(next);
+            delete node;
+        }
+    }
+    bool removeNext(int &__k, clsListNode<T> *node) {
+        if(node) {
+            clsListNode<T> *next = node->getNext();
+            if(next) {
+                if(next->getItem().key() == __k) {
+                    node->setNext(next->getNext());
+                    delete next;
+                    return true;
+                }
+                else
+                    return removeNext(__k, next);
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+        return false;
+    }
+
+public:
+    clsList() {
+        _head = _tail = NULL;
+    }
+    ~clsList() {
+        deleteNode(_head);
+    }
+    clsListNode<T> *head() {
+        return _head;
+    }
+    clsListNode<T> *tail() {
+        return _tail;
+    }
+
+    void add(T *__item) {
+        clsListNode<T> *newItem = new clsListNode<T>(__item);
+        if(_head) {
+            if(_tail) {
+                _tail->setNext(newItem);
+                _tail = newItem;
+            }
+            else {
+                _tail = newItem;
+                _head->setNext(_tail);
+            }
+        }
+        else
+            _head = newItem;
+    }
+    bool remove(int &__k) {
+        if(_head) {
+            if(_head->getItem().key() == __k) {
+                clsListNode<T> *next = _head->getNext();
+                delete _head;
+                _head = next;
+                return true;
+            }
+            else
+                return removeNext(__k, _head);
+        }
+        else
+            return false;
     }
 };
 
