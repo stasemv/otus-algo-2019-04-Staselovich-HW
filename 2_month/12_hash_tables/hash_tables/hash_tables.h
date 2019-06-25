@@ -16,13 +16,13 @@ protected:
     T *_item;
 public:
     clsHashTableItem() {
-        clsHashTableItem(0, NULL);
+        clsHashTableItem(0, 0);
     }
-    clsHashTableItem(int __key, T *__item) {
+    clsHashTableItem(int __key, T __item) {
         _key = __key;
         _item = new T;
         if(__item)
-            memcpy(_item, __item, sizeof(T));
+            memcpy(_item, &__item, sizeof(T));
     }
     ~clsHashTableItem() {
         if(_item)
@@ -33,6 +33,9 @@ public:
     }
     int key() {
         return _key;
+    }
+    bool operator == (clsHashTableItem &__item) {
+        return _key == __item.key();
     }
 };
 
@@ -61,14 +64,18 @@ public:
         if(_items)
             delete[] _items;
     }    
-    void addItem(int index, T item) {
-        clsHashTableItem<T> *newItem = new clsHashTableItem<T>(index, &item);
-        int idx = simpleHash(index, _dim);
+    void addItem(int key, T item) {
+        clsHashTableItem<T> *newItem = new clsHashTableItem<T>(key, item);
+        int idx = simpleHash(key, _dim);
         _items[idx].add(newItem);
     }
-    bool remove(int key) {
+    bool remove(clsHashTableItem<T> __item) {
+        int idx = simpleHash(__item.key(), _dim);
+        return _items[idx].remove(__item);
+    }
+    T * item(int key) {
         int idx = simpleHash(key, _dim);
-        return _items[idx].remove(key);
+        return (_items[idx].find(key))->item();
     }
 
     void print(FILE *fout, const char *title) {

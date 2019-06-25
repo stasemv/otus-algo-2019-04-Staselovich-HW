@@ -49,23 +49,22 @@ protected:
             delete node;
         }
     }
-    bool removeNext(int &__k, clsListNode<T> *node) {
-        if(node) {
+    bool removeNext(T &__item, clsListNode<T> *__node) {
+        clsListNode<T> *node = __node;
+        while(node) {
             clsListNode<T> *next = node->getNext();
             if(next) {
-                if(next->getItem().key() == __k) {
+                if(next->getItem() == __item) {
                     node->setNext(next->getNext());
                     delete next;
                     return true;
                 }
                 else
-                    return removeNext(__k, next);
+                    return removeNext(__item, next);
             }
             else
                 return false;
         }
-        else
-            return false;
         return false;
     }
 
@@ -98,19 +97,28 @@ public:
         else
             _head = newItem;
     }
-    bool remove(int &__k) {
+    bool remove(T &__item) {
         if(_head) {
-            if(_head->getItem().key() == __k) {
+            if(_head->getItem() == __item) {
                 clsListNode<T> *next = _head->getNext();
                 delete _head;
                 _head = next;
                 return true;
             }
             else
-                return removeNext(__k, _head);
+                return removeNext(__item, _head);
         }
         else
             return false;
+    }
+    T * find(int &__k) {
+        clsListNode<T> *node = _head;
+        while(node) {
+            if(node->getItem().key() == __k)
+                return node->getItemPtr();
+            node = node->getNext();
+        }
+        return NULL;
     }
 };
 
