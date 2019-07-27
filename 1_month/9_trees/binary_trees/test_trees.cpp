@@ -1,6 +1,7 @@
 #include "test_trees.h"
 
-#include "trees.h"
+//#include "binary_tree.h"
+#include "avl_tree.h"
 
 #include <stdio.h>
 
