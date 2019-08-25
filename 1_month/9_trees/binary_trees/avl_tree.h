@@ -23,6 +23,14 @@ public:
         _data = __data;
         _left = _right = NULL;
     }
+    ~clsAVLTreeItem() {
+        if(_left)
+            delete _left;
+        if(_right)
+            delete _right;
+        _left = _right = NULL;
+    }
+
     void add(T __data) {
         clsAVLTreeItem *item = new clsAVLTreeItem(__data);
         insert(item);
@@ -65,7 +73,7 @@ public:
             if(_left) {
                 if(_left->right()) {
                     res = smallRightRotation();
-                    direction = &res->_left;
+                    direction = &res->_right;
                 }
                 else {
                     res = _left;
@@ -93,6 +101,20 @@ public:
         }
         return res;
     }
+    clsAVLTreeItem * find(T __data) {
+        clsAVLTreeItem *res = NULL;
+        clsAVLTreeItem* direction = NULL;
+        if(__data == _data)
+            res = this;
+        else if(__data < _data)
+            direction = _left;
+        else
+            direction = _right;
+        if(direction)
+            return direction->find(__data);
+        return res;
+    }
+
     clsAVLTreeItem* rebalance() {
         clsAVLTreeItem* res = this;
         int lh = 0;
@@ -166,6 +188,9 @@ class clsAVLTree : public clsBinaryTree<clsAVLTreeItem, T>
 public:
     clsAVLTree() : clsBinaryTree<clsAVLTreeItem, T>() { }
     clsAVLTree(T __data) : clsBinaryTree<clsAVLTreeItem, T>(__data) {}
+    ~clsAVLTree() {
+        ~clsBinaryTree<clsAVLTreeItem, T>();
+    }
 };
 
 #endif // AVL_TREE_H

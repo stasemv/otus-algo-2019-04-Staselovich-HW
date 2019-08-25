@@ -1,27 +1,41 @@
 #include "test_trees.h"
 
-//#include "binary_tree.h"
 #include "avl_tree.h"
-
-#include <stdio.h>
+#include "splay_tree.h"
 
 void test_trees()
 {
-    FILE *fout = stdout;
-    fout = fopen("trees.txt", "w");
-    clsAVLTree<int> *avlTree = new clsAVLTree<int>(1);
-    for(int i=0; i < 10; ++i) {
-        avlTree->insert(i);
-        avlTree->printTree(fout, "tree", 1);
+    int stat_amount = 20;
+    int iter_amount = 10;
+    int start_items_amount = 512;
+    double gain = 2;
+    double del_part = 0.8;
+    bool isPrint = 0;
+
+    int items_amount = start_items_amount;
+    FILE *fout = fopen("compare.xls","w");
+    fprintf(fout, "start_amount \t%d\t\tstat_amount \t%d\n",
+            start_items_amount, stat_amount);
+    fprintf(fout, "gain \t%f\t\tdel_part \t%f\n",
+            gain, del_part);
+    fprintf(fout, "items_amount \tavl_time \t splay_time\n");
+    for(int i=0; i < iter_amount;
+        ++i, items_amount *= gain) {
+        fprintf(fout, "%d\t", items_amount);
+
+        double time;
+        clsAVLTree<int> *avlTree = new clsAVLTree<int>();
+        time = test_average_tree_time<clsAVLTreeItem, int>(avlTree, "avl_tree",
+                                                           items_amount, del_part,
+                                                           isPrint, stat_amount);
+        fprintf(fout, "%f\t", time);
+
+        clsSplayTree<int> *splay_tree = new clsSplayTree<int>();
+        time = test_average_tree_time<clsSplayTreeItem, int>(splay_tree, "splay_tree",
+                                                             items_amount, del_part,
+                                                             isPrint, stat_amount);
+        fprintf(fout, "%f\t", time);
+        fprintf(fout, "\n");
     }
-
-    avlTree->printTree(fout, "tree_all", 1);
-
-    avlTree->remove(0);
-    avlTree->remove(5);
-    avlTree->remove(1);
-    avlTree->remove(6);
-    avlTree->remove(8);
-    avlTree->printTree(fout, "tree_del", 1);
     fclose(fout);
 }

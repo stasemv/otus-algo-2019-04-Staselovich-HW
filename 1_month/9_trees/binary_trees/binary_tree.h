@@ -69,6 +69,12 @@ public:
     clsBinaryTree() {
         _root = NULL;
     }
+    ~clsBinaryTree() {
+        if(_root) {
+            delete _root;
+            _root = NULL;
+        }
+    }
     clsBinaryTree(T_data __data) {
         _root = new T_item<T_data>(__data);
     }
@@ -83,6 +89,15 @@ public:
         if(_root)
             _root = _root->remove(__data);
     }
+    T_item<T_data> *find(T_data __data) {
+        if(_root)
+            return _root->find(__data);
+        return NULL;
+    }
+    bool isEmpty() {
+        return !_root;
+    }
+
     void printTree(FILE* fout, const char *title, int length = 4) {
         fprintf(fout, "%s:\n", title);
         char *emptyValue = new char[length+3];
@@ -118,12 +133,12 @@ public:
             int count = pow(2, i);
             for(int j=0; j < count; ++j) {
                 int index = idx + j;
-                printSpasing(depth, i, dim, 0, fout, emptyValue, dashValue);
+                printSpasing(depth, i, 0, fout, emptyValue, dashValue);
                 if((index < dim) && nodes[index])
                     fprintf(fout, "%.*lf", length, (double)(nodes[index]->data()));
                 else
                     fprintf(fout, "%s", emptyValue);
-                printSpasing(depth, i, dim, 1, fout, emptyValue, dashValue);
+                printSpasing(depth, i, 1, fout, emptyValue, dashValue);
             }
             idx += pow(2, i);
             fprintf(fout, "\n");
@@ -132,7 +147,7 @@ public:
         delete[] emptyValue;
     }
 private:
-    void printSpasing(int depth, int level, int dim, bool isRight,
+    void printSpasing(int depth, int level, bool isRight,
                       FILE *fout, char *emptes, char *dashs) {
         {
             if(!isRight) {
