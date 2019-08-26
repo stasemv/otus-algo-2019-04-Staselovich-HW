@@ -217,7 +217,7 @@ public:
     int size() {
         return clsDynArr<T>::_size;
     }
-    void add(T item) {
+    void add(T &item) {
         if(clsDynArr<T>::_size == _capacity)
             resize();
         clsDynArr<T>::_array[clsDynArr<T>::_size] = item;
@@ -254,6 +254,12 @@ public:
             return item;
         }
         return T();
+    }
+    T& operator [](int idx) {
+        return clsDynArr<T>::_array[idx];
+    }
+    void push_back(T item) {
+        add(item);
     }
 };
 
@@ -489,6 +495,13 @@ public:
         }
         return T();
     }
+};
+
+template<class T> class clsVector : public clsFactorArr<T>
+{
+public:
+    clsVector() : clsFactorArr<T>() {}
+
 };
 
 #endif // DYNAMIC_ARRAYS_H

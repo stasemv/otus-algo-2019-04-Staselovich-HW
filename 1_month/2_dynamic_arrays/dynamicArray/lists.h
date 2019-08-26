@@ -127,23 +127,37 @@ class clsStack : clsListNode<T>
 {
 private:
     clsListNode<T> *head;
+    size_t _size;
 public:
-    clsStack() : clsListNode<T>() {
+    clsStack() : clsListNode<T>(), _size(0) {
         head = new clsListNode<T>();
     }
 
     void push(T item) {
-        head = new clsListNode<T>(item, head);
+        head = new clsListNode<T>(&item, head);
+        _size++;
     }
     T pop() {
         if(!isEmpty()) {
             T item = head->getItem();
+            clsListNode<T> *node = head;
             head = head->getNext();
+            delete node;
+            _size--;
             return item;
         }
     }
     bool isEmpty() {
         return head->getNext() == NULL;
+    }
+    bool empty() {
+        return isEmpty();
+    }
+    size_t size() {
+        return _size;
+    }
+    T top() {
+        return head->getItem();
     }
 };
 
