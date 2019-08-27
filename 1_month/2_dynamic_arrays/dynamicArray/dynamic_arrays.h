@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <cstring>
 #include <stdexcept>
+#include <stdio.h>
 
 #include <lists.h>
 
