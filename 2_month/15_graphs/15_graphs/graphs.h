@@ -72,12 +72,68 @@ public:
 
 };
 
-struct clsAdjacencyMatrix {
+class clsAdjacencyMatrix {
+protected:
+    int **_matrix;
+    int _nVertex;
+public:
+    clsAdjacencyMatrix() : _matrix(NULL), _nVertex(0) {}
+    clsAdjacencyMatrix(int n) : _nVertex(n) {
+        _matrix = new int*[_nVertex];
+        for(int i=0; i < _nVertex; ++i)
+            _matrix[i] = new int[_nVertex];
+    }
+    clsAdjacencyMatrix(clsAdjacencyVector const * const v) {
+        _nVertex = v->getNVertex();
+        _matrix = new int*[_nVertex];
+        for(int i=0; i < _nVertex; ++i)
+            _matrix[i] = new int[_nVertex];
+        std::vector<sctGraphArc> arcs = v->getArcVector();
+        for(int i=arcs.size()-1; i >= 0; --i){
+            sctGraphArc *arc = &arcs[i];
+            at(arc->start)[arc->end] = arc->weight;
+        }
+    }
 
+    ~clsAdjacencyMatrix() {
+        if(_matrix)
+            delete[] _matrix;
+        _matrix = NULL;
+    }
+    int * at(int row) const {
+        return _matrix[row];
+    }
+
+    int * operator[] (int index) const {
+        return at(index);
+    }
+    int nVertex() const {
+        return _nVertex;
+    }
+    int colSum(int col) const {
+        if(col >= _nVertex)
+            return 0;
+        int sum = 0;
+        for(int i=0; i < _nVertex; ++i)
+            sum += _matrix[i][col];
+        return sum;
+    }
+    int rowSum(int row) const {
+        if(row >= _nVertex)
+            return 0;
+        int sum = 0;
+        for(int i=0; i < _nVertex; ++i)
+            sum += _matrix[row][i];
+        return sum;
+    }
 };
 
+
+// functions:
 int calcKorasaju(clsAdjacencyVector const * const adjVector,
                   int *components);
 
+std::vector<std::vector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
+std::vector<std::vector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
 
 #endif // GRAPHS_H

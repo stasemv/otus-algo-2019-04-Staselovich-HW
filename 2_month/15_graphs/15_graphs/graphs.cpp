@@ -168,3 +168,54 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
     delete H;
     return component_num;
 }
+
+std::vector<std::vector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix)
+{
+    std::vector<std::vector<int> > levels;
+    int N = _matrix->nVertex();
+    int *sums = new int[N];
+    std::vector<int> vertexes;
+    for(int i=0; i < N; ++i) {
+        sums[i] = _matrix->colSum(i);
+        vertexes.push_back(i);
+    }
+
+    int level = 0;
+    int amount = N;
+    while(amount) {
+        std::vector<int> zeros;
+        for(int i=0; i < N; ++i)
+            if(sums[vertexes[i]] == 0)
+                zeros.push_back(vertexes[i]);
+        if(zeros.empty())
+            break;
+        levels.push_back(std::vector<int>());
+        for(int i=0; i < (int)zeros.size(); ++i) {
+            int v = zeros[i];
+            levels[level].push_back(v);
+            int *row = _matrix->at(v);
+            for(int j=0; j < N; ++j)
+                if(row[j])
+                    sums[j]--;
+            amount--;
+            sums[v]--;
+        }
+        level++;
+    }
+
+    delete[] sums;
+    return levels;
+}
+
+enum enmVertexColor {
+    enm_VC_white = 0,
+    enm_VC_gray,
+    enm_VC_black
+};
+
+std::vector<std::vector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix)
+{
+    std::vector<std::vector<int> > levels;
+
+    return levels;
+}

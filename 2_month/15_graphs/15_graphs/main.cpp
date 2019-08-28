@@ -6,7 +6,7 @@ int main()
 {
     test_graphs();
 
-    std::cout << "OK!" << std::endl;
+    std::cout << "Done!" << std::endl;
     return 0;
 }
 
