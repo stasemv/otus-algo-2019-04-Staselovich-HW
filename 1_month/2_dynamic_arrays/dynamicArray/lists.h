@@ -21,7 +21,7 @@ public:
         _data = *__item;
         _next = __next;
     }
-    T getItem() {
+    T& getItem() {
         return _data;
     }
     T *getItemPtr() {
@@ -120,6 +120,30 @@ public:
         }
         return NULL;
     }
+    void push_back(T &item) {
+        add(&item);
+    }
+    size_t size() const {
+        size_t size = 0;
+        clsListNode<T> *node = _head;
+        while(node) {
+            size++;
+            node = node->getNext();
+        }
+        return size;
+    }
+    T& at(int idx) const {
+        int cnt = 0;
+        clsListNode<T> *node = _head;
+        while(node && (cnt++ != idx))
+            node = node->getNext();
+        if(node)
+            return node->getItem();
+//        return T();
+    }
+    T& operator[] (int idx) {
+        return at(idx);
+    }
 };
 
 template<class T>
@@ -146,6 +170,7 @@ public:
             _size--;
             return item;
         }
+        return T();
     }
     bool isEmpty() {
         return head->getNext() == NULL;

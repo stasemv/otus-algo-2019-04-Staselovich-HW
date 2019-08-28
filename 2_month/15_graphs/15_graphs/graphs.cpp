@@ -11,7 +11,11 @@ bool clsAdjacencyVector::addArc(sctGraphArc arc) {
 bool clsAdjacencyVector::addArc(int start, int end, int w) {
     if(!isIndexValid(start) || !isIndexValid(end))
         return 0;
+#ifdef _USE_STD_VECTOR_
     std::vector<sctAdjArc> *list = &_array[start];
+#else
+    clsList<sctAdjArc> *list = &_array[start];
+#endif
     for(int i=0; i < (int)list->size(); ++i)
     if(list->at(i).end == end)
         return 0;       // arc alredy exist
@@ -31,8 +35,13 @@ bool clsAdjacencyVector::addEdge(int start, int end, int w) {
     return addArc(start, end, w) | addArc(end, start, w);
 }
 
+#ifdef _USE_STD_VECTOR_
 std::vector<sctGraphArc> clsAdjacencyVector::getArcVector() const {
     std::vector<sctGraphArc> v;
+#else
+clsVector<sctGraphArc> clsAdjacencyVector::getArcVector() const {
+    clsVector<sctGraphArc> v;
+#endif
     for(int i=0; i < _nVertex; ++i)
         for(int j=_array[i].size()-1; j >= 0; --j) {
             sctGraphArc arc(i, _array[i][j].end, _array[i][j].weight);
@@ -43,7 +52,11 @@ std::vector<sctGraphArc> clsAdjacencyVector::getArcVector() const {
 
 int clsAdjacencyVector::getArcWeight(int start, int end) const
 {
+#ifdef _USE_STD_VECTOR_
     const std::vector<sctAdjArc> *list = &_array[start];
+#else
+    const clsList<sctAdjArc> *list = &_array[start];
+#endif
     for(int i=0; i < (int)list->size(); ++i)
     if(list->at(i).end == end)
         return list->at(i).weight;
@@ -65,8 +78,12 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
 {
     int v_amount = adjVector->getNVertex();
     clsAdjacencyVector *H = new clsAdjacencyVector(v_amount);
+#ifdef _USE_STD_VECTOR_
     std::vector<sctGraphArc> in_arcs = adjVector->getArcVector();
-    for(int i=0; i < in_arcs.size(); ++i)
+#else
+    clsVector<sctGraphArc> in_arcs = adjVector->getArcVector();
+#endif
+    for(int i=0; i < (int)in_arcs.size(); ++i)
         H->addArc(in_arcs[i].end, in_arcs[i].start, in_arcs[i].weight);
 
     clsStack<int> path_H;

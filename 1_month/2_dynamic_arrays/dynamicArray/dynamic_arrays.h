@@ -21,13 +21,24 @@ public:
         _size = 0;
         _array = NULL;
     }
+//    virtual ~clsDynArr() {}
 
     virtual int size() { return 0; }
-    virtual void add(T item) {}
+    virtual void add(T &item) {}
     virtual T get( int index) {}
 
     virtual void add_i(T item, int index) {} // + shift to tail
     virtual T remove(int index) {}
+    T& operator [](int idx) const {
+        return _array[idx];
+    }
+    T& at(int idx) const {
+        return _array[idx];
+    }
+
+    void push_back(T item) {
+        add(item);
+    }
 };
 
 template<class T> class clsNoobDynArr : public clsDynArr<T>
@@ -68,7 +79,7 @@ public:
     int size() {
         return clsDynArr<T>::_size;
     }
-    void add(T item) {
+    void add(T &item) {
         resize(clsDynArr<T>::_size);
         clsDynArr<T>::_array[clsDynArr<T>::_size-1] = item;
     }
@@ -122,20 +133,21 @@ private:
             clsDynArr<T>::_array = newArr;
         }
     }
-
-public:
-    clsBlockArr(int block_size) {
+    void construct(int block_size) {
         clsDynArr<T>::_array = NULL;
         _block = block_size;
         clsDynArr<T>::_size = 0;
         _capacity = 0;
     }
-    clsBlockArr() : clsBlockArr(10) { }
+
+public:
+    clsBlockArr(int block_size) { construct(block_size); }
+    clsBlockArr() { construct(10); }
 
     int size() {
         return clsDynArr<T>::_size;
     }
-    void add(T item) {
+    void add(T &item) {
         if(clsDynArr<T>::_size == _capacity)
             resize();
         clsDynArr<T>::_array[clsDynArr<T>::_size] = item;
@@ -205,17 +217,18 @@ private:
             clsDynArr<T>::_array = newArr;
         }
     }
-public:
-    clsFactorArr(int factor, int init_length) {
+    void construct(int factor, int init_length) {
         _init_length = init_length;
         clsDynArr<T>::_array = new T[init_length];
         _factor = factor;
         clsDynArr<T>::_size = 0;
         _capacity = init_length;
     }
-    clsFactorArr() : clsFactorArr(50, 10) { }
+public:
+    clsFactorArr(int factor, int init_length) { construct(factor, init_length); }
+    clsFactorArr() { construct(50, 10); }
 
-    int size() {
+    int size() const {
         return clsDynArr<T>::_size;
     }
     void add(T &item) {
@@ -256,12 +269,6 @@ public:
         }
         return T();
     }
-    T& operator [](int idx) {
-        return clsDynArr<T>::_array[idx];
-    }
-    void push_back(T item) {
-        add(item);
-    }
 };
 
 template<class T> class clsMatrixArr : public clsDynArr<T>
@@ -282,20 +289,21 @@ private:
             _matrix->remove(last_idx);
         }
     }
-
-public:
-    clsMatrixArr(int vector) {
+    void construct (int vector) {
         _matrix = new clsNoobDynArr<clsBlockArr<T> >;
         _vector = vector;
         clsDynArr<T>::_size = 0;
         _capacity = 0;
     }
-    clsMatrixArr() : clsMatrixArr(10) { }
+
+public:
+    clsMatrixArr(int vector) { construct(vector); }
+    clsMatrixArr() { construct(10); }
 
     int size() {
         return clsDynArr<T>::_size;
     }
-    void add(T item) {
+    void add(T &item) {
         if(clsDynArr<T>::_size >= _capacity)
             resize();
         clsBlockArr<T> *_block = _matrix->getPtr(clsDynArr<T>::_size / _vector);
@@ -429,22 +437,23 @@ private:
                               int * const offset) {
         clsListNode<clsBlockArr<T> > *node = getNode(index, offset);
         return node->getItemPtr();
-    }
-
-public:
-    clsSpaceArr(int vector) {
+    }    
+    void construct (int vector) {
         _matrix = new clsListNode<clsBlockArr<T> >;
         _lastBlock  =_matrix;
         _vector = vector;
         clsDynArr<T>::_size = 0;
         _listSize = 0;
     }
-    clsSpaceArr() : clsSpaceArr(10) {}
+
+public:
+    clsSpaceArr(int vector) { construct(vector); }
+    clsSpaceArr() { construct(10); }
 
     int size() {
         return clsDynArr<T>::_size;
     }
-    void add(T item) {
+    void add(T &item) {
         resize();
         _lastBlock->getItemPtr()->add(item);
         clsDynArr<T>::_size++;

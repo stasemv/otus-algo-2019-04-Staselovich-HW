@@ -1,9 +1,14 @@
 #ifndef GRAPHS_H
 #define GRAPHS_H
 
-//#include "../../../1_month/2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
+#define _USE_STD_VECTOR_
 
+#include "../../../1_month/2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
+#include <stddef.h>
+
+#ifdef _USE_STD_VECTOR_
 #include <vector>
+#endif
 
 struct sctAdjArc {
     int end;
@@ -25,7 +30,11 @@ struct sctGraphArc {
 class clsAdjacencyVector
 {
 protected:
+#ifdef _USE_STD_VECTOR_
     std::vector<std::vector<sctAdjArc> > _array;
+#else
+    clsVector<clsList<sctAdjArc> > _array;
+#endif
     int _nVertex;
     int _nArcs;
     int _nMaxEdges;
@@ -38,7 +47,11 @@ public:
     _nVertex(0), _nArcs(0), _nMaxEdges(0) { }
     clsAdjacencyVector(int n_vertex) :
     _nVertex(n_vertex), _nArcs(0)  {
+#ifdef _USE_STD_VECTOR_
         std::vector<sctAdjArc> arr;
+#else
+        clsList<sctAdjArc> arr;
+#endif
         for(int i=0; i < _nVertex; ++i)
             _array.push_back(arr);
     }
@@ -51,7 +64,11 @@ public:
     int getArcWeight(int start, int end) const;
     int getArcsAmount();
 
+#ifdef _USE_STD_VECTOR_
     std::vector<sctGraphArc> getArcVector() const;
+#else
+    clsVector<sctGraphArc> getArcVector() const;
+#endif
 
 };
 
