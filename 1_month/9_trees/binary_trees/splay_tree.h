@@ -38,13 +38,16 @@ protected:
         if(!res)
             return res;
 
+
         // lift node to top
         switch (nd) {
         case enm_ND_left:
+            *direction = res;
             *direction = (*direction)->_right;
             res->_right = this;
             break;
         case enm_ND_right:
+            *direction = res;
             *direction = (*direction)->_left;
             res->_left = this;
             break;
@@ -133,7 +136,6 @@ public:
         clsSplayTreeItem *res = this;
         clsSplayTreeItem** direction = NULL;
         enmNodeDirection nd = enm_ND_empty;
-//        res = liftToTop(__data);
 
         if(__data == _data) {
             int lh = 0;
@@ -181,17 +183,7 @@ public:
         return res;
     }
     clsSplayTreeItem * find(T __data) {
-        clsSplayTreeItem *res = NULL;
-        clsSplayTreeItem* direction = NULL;
-        if(__data == _data)
-            res = this;
-        else if(__data < _data)
-            direction = _left;
-        else
-            direction = _right;
-        if(direction)
-            return direction->find(__data);
-        return res;
+        return liftToTop(__data);
     }
 
 };
@@ -206,6 +198,16 @@ public:
     clsSplayTree(T data) : clsBinaryTree<clsSplayTreeItem, T>(data) {}    
     ~clsSplayTree() {
         ~clsBinaryTree<clsSplayTreeItem, T>();
+    }
+
+    clsSplayTreeItem<T> *find(T __data) {
+        if(clsBinaryTree<clsSplayTreeItem, T>::_root) {
+            clsSplayTreeItem<T> *res = clsBinaryTree<clsSplayTreeItem, T>::_root->find(__data);
+            if(res)
+                clsBinaryTree<clsSplayTreeItem, T>::_root = res;
+            return res;
+        }
+        return NULL;
     }
 };
 

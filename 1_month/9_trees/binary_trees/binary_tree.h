@@ -89,7 +89,7 @@ public:
         if(_root)
             _root = _root->remove(__data);
     }
-    T_item<T_data> *find(T_data __data) {
+    virtual T_item<T_data> *find(T_data __data) {
         if(_root)
             return _root->find(__data);
         return NULL;
