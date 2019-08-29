@@ -25,6 +25,9 @@ struct sctGraphArc {
 
     sctGraphArc() : start(0), end(0), weight(0) {}
     sctGraphArc(int s, int e, int w = 1) : start(s), end(e), weight(w) {}
+    bool operator < (const sctGraphArc & a) const {
+        return weight < a.weight;
+    }
 };
 
 class clsAdjacencyVector
@@ -55,7 +58,7 @@ public:
         for(int i=0; i < _nVertex; ++i)
             _array.push_back(arr);
     }
-    int getNVertex() const { return _nVertex; }
+    int nVertex() const { return _nVertex; }
 
     bool addArc(sctGraphArc arc);
     bool addArc(int start, int end, int w = 1.0);
@@ -65,9 +68,12 @@ public:
     int getArcsAmount();
 
 #ifdef _USE_STD_VECTOR_
-    std::vector<sctGraphArc> getArcVector() const;
+    std::vector<sctGraphArc> getArcsVector() const;
+    std::vector<sctGraphArc> getArcsVector(int v) const;
+    std::vector<sctGraphArc> getOuterArcs(std::vector<int> *v) const;
 #else
     clsVector<sctGraphArc> getArcVector() const;
+    clsVector<sctGraphArc> getArcsVector(int v) const;
 #endif
 
 };
@@ -84,11 +90,11 @@ public:
             _matrix[i] = new int[_nVertex];
     }
     clsAdjacencyMatrix(clsAdjacencyVector const * const v) {
-        _nVertex = v->getNVertex();
+        _nVertex = v->nVertex();
         _matrix = new int*[_nVertex];
         for(int i=0; i < _nVertex; ++i)
             _matrix[i] = new int[_nVertex];
-        std::vector<sctGraphArc> arcs = v->getArcVector();
+        std::vector<sctGraphArc> arcs = v->getArcsVector();
         for(int i=arcs.size()-1; i >= 0; --i){
             sctGraphArc *arc = &arcs[i];
             at(arc->start)[arc->end] = arc->weight;
@@ -135,5 +141,8 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
 
 std::vector<std::vector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 std::vector<std::vector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
+
+std::vector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
+std::vector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G);
 
 #endif // GRAPHS_H
