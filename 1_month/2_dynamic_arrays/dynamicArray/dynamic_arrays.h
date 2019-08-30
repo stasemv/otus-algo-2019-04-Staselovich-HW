@@ -39,6 +39,9 @@ public:
     void push_back(T item) {
         add(item);
     }
+    bool empty() const {
+        return (_size == 0);
+    }
 };
 
 template<class T> class clsNoobDynArr : public clsDynArr<T>
@@ -228,7 +231,7 @@ public:
     clsFactorArr(int factor, int init_length) { construct(factor, init_length); }
     clsFactorArr() { construct(50, 10); }
 
-    int size() const {
+    size_t size() const {
         return clsDynArr<T>::_size;
     }
     void add(T &item) {

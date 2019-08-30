@@ -102,7 +102,7 @@ public:
     clsSplayTreeItem * insert(clsSplayTreeItem *__item) {
         clsSplayTreeItem** direction = NULL;
         enmNodeDirection nd = enm_ND_empty;
-        if(__item->_data <= _data) {
+        if(__item->_data < _data) {
             direction = &_left;
             nd = enm_ND_left;
         }
@@ -184,6 +184,13 @@ public:
     }
     clsSplayTreeItem * find(T __data) {
         return liftToTop(__data);
+    }
+    void getArray(clsVector<T> *arr) {
+        if(_left)
+            _left->getArray(arr);
+        arr->add(_data);
+        if(_right)
+            _right->getArray(arr);
     }
 
 };

@@ -58,7 +58,7 @@ void test_Kosaraju(int v_amount, int e_amount)
 }
 
 void simple_test_topologic_sort(
-        std::vector<std::vector<int> > sort_func(clsAdjacencyMatrix const * const))
+        clsList<clsVector<int> > sort_func(clsAdjacencyMatrix const * const))
 {
     int v_amount = 10;
     clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
@@ -87,17 +87,18 @@ void simple_test_topologic_sort(
 // lvl5: 7, 8
 
     clsAdjacencyMatrix *mG = new clsAdjacencyMatrix(G);
-    std::vector<std::vector<int> > levels = sort_func(mG);
+    clsList<clsVector<int> > levels = sort_func(mG);
     for(size_t i=0; i < levels.size(); ++i) {
         printf("level[%lu]: ", i);
-        for(size_t j=0; j < levels[i].size(); ++j)
+        for(int j=0; j < levels[i].size(); ++j)
             printf("v_%d, ", levels[i][j]);
         printf("\n");
     }
+//    delete[] levels;
 }
 
 void simple_test_min_ostov_tree(
-        std::vector<sctGraphArc> ostov_func(clsAdjacencyVector const * const))
+        clsVector<sctGraphArc> ostov_func(clsAdjacencyVector const * const))
 {
     int v_amount = 7;
     clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
@@ -117,7 +118,7 @@ void simple_test_min_ostov_tree(
 // 4-6
 // weight sum = 5 + 7 + 7 + 5 + 6 + 9 = 39
 
-    std::vector<sctGraphArc> ostTree = ostov_func(G);
+    clsVector<sctGraphArc> ostTree = ostov_func(G);
     printf("ostov tree edges:\n");
     int sum = 0;
     for(size_t i=0; i < ostTree.size(); ++i) {

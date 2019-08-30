@@ -2,6 +2,7 @@
 
 #include "stdlib.h"
 #include "../../../1_month/2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
+#include "../../../1_month/9_trees/binary_trees/splay_tree.h"
 
 #include <algorithm>
 #include <set>
@@ -16,11 +17,13 @@ bool clsAdjacencyVector::addArc(int start, int end, int w) {
 #ifdef _USE_STD_VECTOR_
     std::vector<sctAdjArc> *list = &_array[start];
 #else
-    clsList<sctAdjArc> *list = &_array[start];
+    clsVector<sctAdjArc> *list = &(_array[start]);
 #endif
-    for(int i=0; i < (int)list->size(); ++i)
-    if(list->at(i).end == end)
-        return 0;       // arc alredy exist
+    for(int i=0; i < (int)list->size(); ++i) {
+        sctAdjArc arc = list->at(i);
+        if(arc.end == end)
+            return 0;       // arc alredy exist
+    }
     sctAdjArc arc(end, w);
     list->push_back(arc);
     if((int)list->size() > _nMaxEdges)
@@ -41,7 +44,7 @@ bool clsAdjacencyVector::addEdge(int start, int end, int w) {
 std::vector<sctGraphArc> clsAdjacencyVector::getArcsVector() const {
     std::vector<sctGraphArc> v;
 #else
-clsVector<sctGraphArc> clsAdjacencyVector::getArcVector() const {
+clsVector<sctGraphArc> clsAdjacencyVector::getArcsVector() const {
     clsVector<sctGraphArc> v;
 #endif
     for(int i=0; i < _nVertex; ++i) {
@@ -58,7 +61,7 @@ clsVector<sctGraphArc> clsAdjacencyVector::getArcVector() const {
 std::vector<sctGraphArc> clsAdjacencyVector::getArcsVector(int u) const {
     std::vector<sctGraphArc> v;
 #else
-clsVector<sctGraphArc> clsAdjacencyVector::getArcVector(int u) const {
+clsVector<sctGraphArc> clsAdjacencyVector::getArcsVector(int u) const {
     clsVector<sctGraphArc> v;
 #endif
     int n = _array[u].size();
@@ -73,7 +76,7 @@ clsVector<sctGraphArc> clsAdjacencyVector::getArcVector(int u) const {
 std::vector<sctGraphArc> clsAdjacencyVector::getOuterArcs(std::vector<int> *_v) const {
     std::vector<sctGraphArc> v;
 #else
-clsVector<sctGraphArc> clsAdjacencyVector::getOuterArcs(std::vector<int> _v) const {
+clsVector<sctGraphArc> clsAdjacencyVector::getOuterArcs(clsVector<int> *_v) const {
     clsVector<sctGraphArc> v;
 #endif
     std::set<int> vert;
@@ -99,7 +102,7 @@ int clsAdjacencyVector::getArcWeight(int start, int end) const
 #ifdef _USE_STD_VECTOR_
     const std::vector<sctAdjArc> *list = &_array[start];
 #else
-    const clsList<sctAdjArc> *list = &_array[start];
+    const clsVector<sctAdjArc> *list = &_array[start];
 #endif
     for(int i=0; i < (int)list->size(); ++i)
     if(list->at(i).end == end)
@@ -168,7 +171,7 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
 #ifdef _USE_STD_VECTOR_
     std::vector<sctGraphArc> in_arcs = adjVector->getArcsVector();
 #else
-    clsVector<sctGraphArc> in_arcs = adjVector->getArcVector();
+    clsVector<sctGraphArc> in_arcs = adjVector->getArcsVector();
 #endif
     for(int i=0; i < (int)in_arcs.size(); ++i)
         H->addArc(in_arcs[i].end, in_arcs[i].start, in_arcs[i].weight);
@@ -222,12 +225,12 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
     return component_num;
 }
 
-std::vector<std::vector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix)
+clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix)
 {
-    std::vector<std::vector<int> > levels;
+    clsList<clsVector<int> > levels;
     int N = _matrix->nVertex();
     int *sums = new int[N];
-    std::vector<int> vertexes;
+    clsVector<int> vertexes;
     for(int i=0; i < N; ++i) {
         sums[i] = _matrix->colSum(i);
         vertexes.push_back(i);
@@ -236,16 +239,17 @@ std::vector<std::vector<int> > calcDemucron(clsAdjacencyMatrix const * const _ma
     int level = 0;
     int amount = N;
     while(amount) {
-        std::vector<int> zeros;
+        clsVector<int> zeros;
         for(int i=0; i < N; ++i)
             if(sums[vertexes[i]] == 0)
                 zeros.push_back(vertexes[i]);
         if(zeros.empty())
             break;
-        levels.push_back(std::vector<int>());
+        clsVector<int> newLevel;
+        levels.add(&newLevel);
         for(int i=0; i < (int)zeros.size(); ++i) {
             int v = zeros[i];
-            levels[level].push_back(v);
+            levels.at(level).push_back(v);
             int *row = _matrix->at(v);
             for(int j=0; j < N; ++j)
                 if(row[j])
@@ -266,9 +270,9 @@ enum enmVertexColor {
     enm_VC_black
 };
 
-std::vector<std::vector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix)
+clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix)
 {
-    std::vector<std::vector<int> > levels;
+    clsList<clsVector<int> > levels;
     int N = _matrix->nVertex();
 
     enmVertexColor *vColors = new enmVertexColor[N];
@@ -314,7 +318,7 @@ std::vector<std::vector<int> > calcTarjan(clsAdjacencyMatrix const * const _matr
     return levels;
 }
 
-sctGraphArc * findMinArc(std::vector<sctGraphArc> *arcs)
+sctGraphArc * findMinArc(clsVector<sctGraphArc> *arcs)
 {
     if(arcs->size() <= 0)
         return NULL;
@@ -326,7 +330,7 @@ sctGraphArc * findMinArc(std::vector<sctGraphArc> *arcs)
     return min;
 }
 
-std::vector<int> getVertexList(std::vector<sctGraphArc> * arcs)
+clsVector<int> getVertexList(clsVector<sctGraphArc> * arcs)
 {
     std::set<int> v;
     int n = arcs->size();
@@ -335,22 +339,22 @@ std::vector<int> getVertexList(std::vector<sctGraphArc> * arcs)
         v.insert(arcs->at(i).end);
     }
 
-    std::vector<int> vert;
+    clsVector<int> vert;
     for(std::set<int>::iterator it = v.begin();
         it != v.end(); ++it)
         vert.push_back(*it);
     return vert;
 }
 
-std::vector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
+clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
 {
-    std::vector<sctGraphArc> ostov;
+    clsVector<sctGraphArc> ostov;
     int v0 = rand() % G->nVertex();
-    std::vector<sctGraphArc> edges = G->getArcsVector(v0);
+    clsVector<sctGraphArc> edges = G->getArcsVector(v0);
     sctGraphArc * minArc = findMinArc(&edges);
     ostov.push_back(*minArc);
     while(((int)ostov.size()+1) < G->nVertex()) {
-        std::vector<int> verts = getVertexList(&ostov);
+        clsVector<int> verts = getVertexList(&ostov);
         edges = G->getOuterArcs(&verts);
         minArc = findMinArc(&edges);
         if(!minArc)
@@ -360,16 +364,22 @@ std::vector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
     return ostov;
 }
 
-std::vector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G)
+clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G)
 {
-    std::vector<sctGraphArc> ostov;
+    clsVector<sctGraphArc> ostov;
     size_t n = G->nVertex();
     if(n <= 0)
         return ostov;
 
-    std::set<int> ostovVerts;
-    std::vector<sctGraphArc> arcs = G->getArcsVector();
-    std::sort(arcs.begin(), arcs.end());
+    clsSplayTree<int> ostovVerts;
+    clsVector<sctGraphArc> arcs_temp = G->getArcsVector();
+
+//    std::sort(arcs.begin(), arcs.end());
+    clsSplayTree<sctGraphArc> _arcs;
+    for(size_t i=0; i < arcs_temp.size(); ++i)
+        _arcs.insert(arcs_temp[i]);
+    clsVector<sctGraphArc> arcs = _arcs.getArray();
+
     ostov.push_back(arcs[0]);
     ostovVerts.insert(arcs[0].start);
     ostovVerts.insert(arcs[0].end);
@@ -377,12 +387,12 @@ std::vector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G)
 
     while((ostov.size()+1) < n) {
         bool isNewArcFound = false;
-        for(std::vector<sctGraphArc>::iterator it = arcs.begin();
+        for(clsVector<sctGraphArc>::iterator it = arcs.begin();
             it != arcs.end(); ++it) {
-            if((ostovVerts.find((*it).start) != ostovVerts.end())
-                    || (ostovVerts.find((*it).end) != ostovVerts.end()))
-                if((ostovVerts.find((*it).start) == ostovVerts.end())
-                        || (ostovVerts.find((*it).end) == ostovVerts.end())) {
+            if(ostovVerts.find((*it).start)
+                    || ostovVerts.find((*it).end))
+                if(ostovVerts.find((*it).start)
+                        || ostovVerts.find((*it).end)) {
                     ostov.push_back(*it);
                     ostovVerts.insert((*it).start);
                     ostovVerts.insert((*it).end);

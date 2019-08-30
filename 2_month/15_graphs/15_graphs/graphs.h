@@ -1,7 +1,7 @@
 #ifndef GRAPHS_H
 #define GRAPHS_H
 
-#define _USE_STD_VECTOR_
+//#define _USE_STD_VECTOR_
 
 #include "../../../1_month/2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
 #include <stddef.h>
@@ -36,7 +36,7 @@ protected:
 #ifdef _USE_STD_VECTOR_
     std::vector<std::vector<sctAdjArc> > _array;
 #else
-    clsVector<clsList<sctAdjArc> > _array;
+    clsVector<sctAdjArc> *_array;
 #endif
     int _nVertex;
     int _nArcs;
@@ -52,11 +52,20 @@ public:
     _nVertex(n_vertex), _nArcs(0)  {
 #ifdef _USE_STD_VECTOR_
         std::vector<sctAdjArc> arr;
-#else
-        clsList<sctAdjArc> arr;
-#endif
         for(int i=0; i < _nVertex; ++i)
             _array.push_back(arr);
+#else
+        _array = new clsVector<sctAdjArc>[_nVertex]();
+//        clsList<sctAdjArc> arr;
+//        for(int i=0; i < _nVertex; ++i)
+//            _array.push_back(arr);
+#endif
+    }
+    ~clsAdjacencyVector() {
+#ifdef _USE_STD_VECTOR_
+#else
+        delete[] _array;
+#endif
     }
     int nVertex() const { return _nVertex; }
 
@@ -72,8 +81,9 @@ public:
     std::vector<sctGraphArc> getArcsVector(int v) const;
     std::vector<sctGraphArc> getOuterArcs(std::vector<int> *v) const;
 #else
-    clsVector<sctGraphArc> getArcVector() const;
+    clsVector<sctGraphArc> getArcsVector() const;
     clsVector<sctGraphArc> getArcsVector(int v) const;
+    clsVector<sctGraphArc> getOuterArcs(clsVector<int> *_v) const;
 #endif
 
 };
@@ -94,7 +104,11 @@ public:
         _matrix = new int*[_nVertex];
         for(int i=0; i < _nVertex; ++i)
             _matrix[i] = new int[_nVertex];
+#ifdef _USE_STD_VECTOR_
         std::vector<sctGraphArc> arcs = v->getArcsVector();
+#else
+        clsVector<sctGraphArc> arcs = v->getArcsVector();
+#endif
         for(int i=arcs.size()-1; i >= 0; --i){
             sctGraphArc *arc = &arcs[i];
             at(arc->start)[arc->end] = arc->weight;
@@ -139,10 +153,10 @@ public:
 int calcKorasaju(clsAdjacencyVector const * const adjVector,
                   int *components);
 
-std::vector<std::vector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
-std::vector<std::vector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
+clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
+clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
 
-std::vector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
-std::vector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G);
+clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
+clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G);
 
 #endif // GRAPHS_H

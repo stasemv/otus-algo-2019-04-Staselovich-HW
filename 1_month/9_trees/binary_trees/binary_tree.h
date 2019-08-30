@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include "../../6_heap_tree_sort/heap_tree_sort/tree_sorts.h"
+#include "../../2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
 
 template<class T>
 class clsBinTreeItem
@@ -96,6 +97,12 @@ public:
     }
     bool isEmpty() {
         return !_root;
+    }
+    clsVector<T_data> getArray() {
+        clsVector<T_data> arr;
+        if(_root)
+            _root->getArray(&arr);
+        return arr;
     }
 
     void printTree(FILE* fout, const char *title, int length = 4) {
