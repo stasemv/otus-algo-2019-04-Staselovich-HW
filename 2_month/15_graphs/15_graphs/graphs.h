@@ -118,8 +118,8 @@ public:
 
 
 // functions:
-//int calcKorasaju(clsAdjacencyVector const * const adjVector,
-//                  int *components);
+int calcKorasaju(clsAdjacencyVector const * const adjVector,
+                  int *components);
 
 //clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 //clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);

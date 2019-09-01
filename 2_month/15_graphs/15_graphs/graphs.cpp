@@ -94,105 +94,105 @@ int clsAdjacencyVector::getArcsAmount()
 
 
 
-//clsStack<int> DFS(clsAdjacencyVector const * const G)
-//{
-//    clsStack<int> path;
-//    int N = G->nVertex();
-//    char *checked = new char[N];
-//    memset(checked, 0, N);
-//    int v = 0;
-//    clsStack<int> path_DFS;
-//    checked[v] = 1;
-//    path.push(v);
-//    while((int)path.size() < N) {
-//        int next = -1;
-//        for(int i=0; i < N; ++i)
-//            if(G->getArcWeight(v, i))
-//                if(!checked[i]) {
-//                    next = i;
-//                    break;
-//                }
-//        if(next > -1) {
-//            path_DFS.push(v);
-//            v = next;
-//            checked[v] = 1;
-//            path.push(v);
-//        }
-//        else if(!path_DFS.empty()) {
-//            v = path_DFS.top();
-//            path_DFS.pop();
-//        }
-//        else {
-//            for(int i=0; i < N; ++i)
-//                if(!checked[i]) {
-//                    v = i;
-//                    path_DFS.push(v);
-//                    checked[v] = 1;
-//                    path.push(v);
-//                    break;
-//                }
-//        }
-//    }
-//    return path;
-//}
+clsStack<int> DFS(clsAdjacencyVector const * const G)
+{
+    clsStack<int> path;
+    int N = G->nVertex();
+    char *checked = new char[N];
+    memset(checked, 0, N);
+    int v = 0;
+    clsStack<int> path_DFS;
+    checked[v] = 1;
+    path.push(v);
+    while((int)path.size() < N) {
+        int next = -1;
+        for(int i=0; i < N; ++i)
+            if(G->getArcWeight(v, i))
+                if(!checked[i]) {
+                    next = i;
+                    break;
+                }
+        if(next > -1) {
+            path_DFS.push(v);
+            v = next;
+            checked[v] = 1;
+            path.push(v);
+        }
+        else if(!path_DFS.empty()) {
+            v = path_DFS.top();
+            path_DFS.pop();
+        }
+        else {
+            for(int i=0; i < N; ++i)
+                if(!checked[i]) {
+                    v = i;
+                    path_DFS.push(v);
+                    checked[v] = 1;
+                    path.push(v);
+                    break;
+                }
+        }
+    }
+    return path;
+}
 
-//int calcKorasaju(clsAdjacencyVector const * const adjVector,
-//                  int *components)
-//{
-//    int v_amount = adjVector->nVertex();
-//    clsAdjacencyVector *H = new clsAdjacencyVector(v_amount);
-//    clsVector<sctGraphArc> in_arcs = adjVector->getArcsVector();
-//    for(int i=0; i < (int)in_arcs.size(); ++i)
-//        H->addArc(in_arcs[i].end, in_arcs[i].start, in_arcs[i].weight);
+int calcKorasaju(clsAdjacencyVector const * const adjVector,
+                  int *components)
+{
+    int v_amount = adjVector->nVertex();
+    clsAdjacencyVector *H = new clsAdjacencyVector(v_amount);
+    clsVector<sctGraphArc> in_arcs = adjVector->getArcsVector();
+    for(int i=0; i < (int)in_arcs.size(); ++i)
+        H->addArc(in_arcs[i].end, in_arcs[i].start, in_arcs[i].weight);
 
-//    clsStack<int> path_H = DFS(H);
+    clsStack<int> path_H = DFS(H);
 
-//    // 3
-//    char *checked = new char[v_amount];
-//    clsStack<int> path_DFS;
-//    memset(components, 0, v_amount*sizeof(int));
-//    memset(checked, 0, v_amount);
-//    int v_G = path_H.top();
-//    path_H.pop();
-//    path_DFS = clsStack<int>();
-//    checked[v_G] = 1;
-//    int component_num = 1;
-//    components[v_G] = component_num;
-//    while(!path_H.empty()) {
-//        int next = -1;
-//        for(int i=0; i < v_amount; ++i)
-//            if(adjVector->getArcWeight(v_G, i))
-//                if(!checked[i]) {
-//                    next = i;
-//                    break;
-//                }
-//        if(next > -1) {
-//            v_G = path_H.top();
-//            path_H.pop();
-//            path_DFS.push(v_G);
-//            checked[v_G] = 1;
-//            components[v_G] = component_num;
-//        }
-//        else if(!path_DFS.empty()) {
-//            v_G = path_DFS.top();
-//            path_DFS.pop();
-//        }
-//        else {
-//            component_num++;
+    // 3
+    char *checked = new char[v_amount];
+    clsStack<int> path_DFS;
+    memset(components, 0, v_amount*sizeof(int));
+    memset(checked, 0, v_amount);
+    int v_G = path_H.top();
+    path_H.pop();
+    path_DFS = clsStack<int>();
+    checked[v_G] = 1;
+    int component_num = 1;
+    components[v_G] = component_num;
+    while(!path_H.empty()) {
+        int next = -1;
+        for(int i=0; i < v_amount; ++i)
+            if(adjVector->getArcWeight(v_G, i))
+                if(!checked[i]) {
+                    next = i;
+                    break;
+                }
+        if(next > -1) {
+            v_G = path_H.top();
+            path_H.pop();
+            path_DFS.push(v_G);
+            checked[v_G] = 1;
+            components[v_G] = component_num;
+        }
+        else if(!path_DFS.empty()) {
+            v_G = path_DFS.top();
+            path_DFS.pop();
+        }
+        else {
+            component_num++;
 
-//            v_G = path_H.top();
-//            path_H.pop();
+            v_G = path_H.top();
+            path_H.pop();
 
-//            path_DFS.push(v_G);
-//            checked[v_G] = 1;
-//            components[v_G] = component_num;
-//        }
-//    }
+            path_DFS.push(v_G);
+            checked[v_G] = 1;
+            components[v_G] = component_num;
+        }
+    }
 
-//    delete[] checked;
-//    delete H;
-//    return component_num;
-//}
+    delete[] checked;
+    delete H;
+    return component_num;
+}
 
 //clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix)
 //{
