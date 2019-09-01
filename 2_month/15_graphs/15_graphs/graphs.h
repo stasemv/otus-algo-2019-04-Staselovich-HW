@@ -128,7 +128,7 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
 clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 //clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
 
-//clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
-//clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G);
+clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
+clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G);
 
 #endif // GRAPHS_H

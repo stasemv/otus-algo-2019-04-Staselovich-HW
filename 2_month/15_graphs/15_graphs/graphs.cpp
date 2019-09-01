@@ -287,51 +287,51 @@ enum enmVertexColor {
 //    return levels;
 //}
 
-//sctGraphArc * findMinArc(clsVector<sctGraphArc> *arcs)
-//{
-//    if(arcs->size() <= 0)
-//        return NULL;
-//    size_t size = arcs->size();
-//    sctGraphArc * min = &arcs->at(0);
-//    for(size_t i=1; i < size; ++i)
-//        if(arcs->at(i).weight < min->weight)
-//            min = &arcs->at(i);
-//    return min;
-//}
+sctGraphArc * findMinArc(clsVector<sctGraphArc> *arcs)
+{
+    if(arcs->size() <= 0)
+        return NULL;
+    size_t size = arcs->size();
+    sctGraphArc * min = &arcs->at(0);
+    for(size_t i=1; i < size; ++i)
+        if(arcs->at(i).weight < min->weight)
+            min = &arcs->at(i);
+    return min;
+}
 
-//clsVector<int> getVertexList(clsVector<sctGraphArc> * arcs)
-//{
-//    std::set<int> v;
-//    int n = arcs->size();
-//    for(int i=0; i < n; ++i) {
-//        v.insert(arcs->at(i).start);
-//        v.insert(arcs->at(i).end);
-//    }
+clsVector<int> getVertexList(clsVector<sctGraphArc> * arcs)
+{
+    std::set<int> v;
+    int n = arcs->size();
+    for(int i=0; i < n; ++i) {
+        v.insert(arcs->at(i).start);
+        v.insert(arcs->at(i).end);
+    }
 
-//    clsVector<int> vert;
-//    for(std::set<int>::iterator it = v.begin();
-//        it != v.end(); ++it)
-//        vert.push_back(*it);
-//    return vert;
-//}
+    clsVector<int> vert;
+    for(std::set<int>::iterator it = v.begin();
+        it != v.end(); ++it)
+        vert.push_back(*it);
+    return vert;
+}
 
-//clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
-//{
-//    clsVector<sctGraphArc> ostov;
-//    int v0 = rand() % G->nVertex();
-//    clsVector<sctGraphArc> edges = G->getArcsVector(v0);
-//    sctGraphArc * minArc = findMinArc(&edges);
-//    ostov.push_back(*minArc);
-//    while(((int)ostov.size()+1) < G->nVertex()) {
-//        clsVector<int> verts = getVertexList(&ostov);
-//        edges = G->getOuterArcs(&verts);
-//        minArc = findMinArc(&edges);
-//        if(!minArc)
-//            break;
-//        ostov.push_back(*minArc);
-//    }
-//    return ostov;
-//}
+clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
+{
+    clsVector<sctGraphArc> ostov;
+    int v0 = rand() % G->nVertex();
+    clsVector<sctGraphArc> edges = G->getArcsVector(v0);
+    sctGraphArc * minArc = findMinArc(&edges);
+    ostov.push_back(*minArc);
+    while(((int)ostov.size()+1) < G->nVertex()) {
+        clsVector<int> verts = getVertexList(&ostov);
+        edges = G->getOuterArcs(&verts);
+        minArc = findMinArc(&edges);
+        if(!minArc)
+            break;
+        ostov.push_back(*minArc);
+    }
+    return ostov;
+}
 
 //clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G)
 //{
