@@ -57,45 +57,45 @@ void test_Kosaraju(int v_amount, int e_amount)
     delete G;
 }
 
-//void simple_test_topologic_sort(
-//        clsList<clsVector<int> > sort_func(clsAdjacencyMatrix const * const))
-//{
-//    int v_amount = 10;
-//    clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
-//    G->addArc(0, 1);
-//    G->addArc(1, 3); G->addArc(1, 4);
-//    G->addArc(2, 1);
-//    G->addArc(3, 5); G->addArc(3, 6);
-//    G->addArc(4, 6);
-//    G->addArc(5, 6); G->addArc(5, 9);
-//    G->addArc(6, 7); G->addArc(6, 8);
+void simple_test_topologic_sort(
+        clsList<clsVector<int> > sort_func(clsAdjacencyMatrix const * const))
+{
+    int v_amount = 10;
+    clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
+    G->addArc(0, 1);
+    G->addArc(1, 3); G->addArc(1, 4);
+    G->addArc(2, 1);
+    G->addArc(3, 5); G->addArc(3, 6);
+    G->addArc(4, 6);
+    G->addArc(5, 6); G->addArc(5, 9);
+    G->addArc(6, 7); G->addArc(6, 8);
 
-//// 0----> 1-----> 3 -----> 5 -----> 9
-////       /\\       \       |
-////       |  \|      \|     \/
-////       2   -4 --->------> 6 -----> 8
-////                          |
-////                          \/
-////                           7
+// 0----> 1-----> 3 -----> 5 -----> 9
+//       /\\       \       |
+//       |  \|      \|     \/
+//       2   -4 --->------> 6 -----> 8
+//                          |
+//                          \/
+//                           7
 
-//// expected result:
-//// lvl0: 0, 2
-//// lvl1: 1
-//// lvl2: 3, 4
-//// lvl3: 5
-//// lvl4: 6, 9
-//// lvl5: 7, 8
+// expected result:
+// lvl0: 0, 2
+// lvl1: 1
+// lvl2: 3, 4
+// lvl3: 5
+// lvl4: 6, 9
+// lvl5: 7, 8
 
-//    clsAdjacencyMatrix *mG = new clsAdjacencyMatrix(G);
-//    clsList<clsVector<int> > levels = sort_func(mG);
-//    for(size_t i=0; i < levels.size(); ++i) {
-//        printf("level[%lu]: ", i);
-//        for(int j=0; j < levels[i].size(); ++j)
-//            printf("v_%d, ", levels[i][j]);
-//        printf("\n");
-//    }
-////    delete[] levels;
-//}
+    clsAdjacencyMatrix *mG = new clsAdjacencyMatrix(G);
+    clsList<clsVector<int> > levels = sort_func(mG);
+    for(size_t i=0; i < levels.size(); ++i) {
+        printf("level[%lu]: ", i);
+        for(int j=0; j < levels[i].size(); ++j)
+            printf("v_%d, ", levels[i][j]);
+        printf("\n");
+    }
+//    delete[] levels;
+}
 
 //void simple_test_min_ostov_tree(
 //        clsVector<sctGraphArc> ostov_func(clsAdjacencyVector const * const))
@@ -130,10 +130,10 @@ void test_Kosaraju(int v_amount, int e_amount)
 
 void test_graphs()
 {
-    simple_test_Kosaraju();
-    test_Kosaraju(1000, 1000);
+//    simple_test_Kosaraju();
+//    test_Kosaraju(1000, 1000);
 
-//    simple_test_topologic_sort(calcDemucron);
+    simple_test_topologic_sort(calcDemucron);
 //    simple_test_topologic_sort(calcTarjan);
 
 //    simple_test_min_ostov_tree(calcPrim);

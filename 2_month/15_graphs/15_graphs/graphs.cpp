@@ -194,44 +194,44 @@ int calcKorasaju(clsAdjacencyVector const * const adjVector,
     return component_num;
 }
 
-//clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix)
-//{
-//    clsList<clsVector<int> > levels;
-//    int N = _matrix->nVertex();
-//    int *sums = new int[N];
-//    clsVector<int> vertexes;
-//    for(int i=0; i < N; ++i) {
-//        sums[i] = _matrix->colSum(i);
-//        vertexes.push_back(i);
-//    }
+clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix)
+{
+    clsList<clsVector<int> > levels;
+    int N = _matrix->nVertex();
+    int *sums = new int[N];
+    clsVector<int> vertexes;
+    for(int i=0; i < N; ++i) {
+        sums[i] = _matrix->colSum(i);
+        vertexes.push_back(i);
+    }
 
-//    int level = 0;
-//    int amount = N;
-//    while(amount) {
-//        clsVector<int> zeros;
-//        for(int i=0; i < N; ++i)
-//            if(sums[vertexes[i]] == 0)
-//                zeros.push_back(vertexes[i]);
-//        if(zeros.empty())
-//            break;
-//        clsVector<int> newLevel;
-//        levels.add(&newLevel);
-//        for(int i=0; i < (int)zeros.size(); ++i) {
-//            int v = zeros[i];
-//            levels.at(level).push_back(v);
-//            int *row = _matrix->at(v);
-//            for(int j=0; j < N; ++j)
-//                if(row[j])
-//                    sums[j]--;
-//            amount--;
-//            sums[v]--;
-//        }
-//        level++;
-//    }
+    int level = 0;
+    int amount = N;
+    while(amount) {
+        clsVector<int> zeros;
+        for(int i=0; i < N; ++i)
+            if(sums[vertexes[i]] == 0)
+                zeros.push_back(vertexes[i]);
+        if(zeros.empty())
+            break;
+        clsVector<int> newLevel;
+        levels.add(&newLevel);
+        for(int i=0; i < (int)zeros.size(); ++i) {
+            int v = zeros[i];
+            levels.at(level).push_back(v);
+            int *row = _matrix->at(v);
+            for(int j=0; j < N; ++j)
+                if(row[j])
+                    sums[j]--;
+            amount--;
+            sums[v]--;
+        }
+        level++;
+    }
 
-//    delete[] sums;
-//    return levels;
-//}
+    delete[] sums;
+    return levels;
+}
 
 enum enmVertexColor {
     enm_VC_white = 0,

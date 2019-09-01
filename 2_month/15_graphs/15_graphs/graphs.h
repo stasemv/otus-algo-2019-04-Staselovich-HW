@@ -68,14 +68,18 @@ public:
     clsAdjacencyMatrix() : _matrix(NULL), _nVertex(0) {}
     clsAdjacencyMatrix(int n) : _nVertex(n) {
         _matrix = new int*[_nVertex];
-        for(int i=0; i < _nVertex; ++i)
+        for(int i=0; i < _nVertex; ++i) {
             _matrix[i] = new int[_nVertex];
+            memset(_matrix[i], 0, _nVertex*sizeof(int));
+        }
     }
     clsAdjacencyMatrix(clsAdjacencyVector const * const v) {
         _nVertex = v->nVertex();
         _matrix = new int*[_nVertex];
-        for(int i=0; i < _nVertex; ++i)
+        for(int i=0; i < _nVertex; ++i) {
             _matrix[i] = new int[_nVertex];
+        memset(_matrix[i], 0, _nVertex*sizeof(int));
+    }
         clsVector<sctGraphArc> arcs = v->getArcsVector();
         for(int i=arcs.size()-1; i >= 0; --i){
             sctGraphArc *arc = &arcs[i];
@@ -121,7 +125,7 @@ public:
 int calcKorasaju(clsAdjacencyVector const * const adjVector,
                   int *components);
 
-//clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
+clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 //clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
 
 //clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
