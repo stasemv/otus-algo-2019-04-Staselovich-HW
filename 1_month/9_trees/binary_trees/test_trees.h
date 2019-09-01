@@ -8,8 +8,8 @@
 
 void test_trees();
 
-template<template<class> class T_item, class T>
-double test_tree(clsBinaryTree<T_item, T> *tree,
+template<template<class> class T_tree, class T>
+double test_tree(T_tree<T> *tree,
                  const char *name,
                  int amount, double deleted_part,
                  bool isPrintToFile)
@@ -60,8 +60,8 @@ double test_tree(clsBinaryTree<T_item, T> *tree,
     return time;
 }
 
-template<template<class> class T_item, class T>
-double test_average_tree_time(clsBinaryTree<T_item, T> *tree,
+template<template<class> class T_tree, class T>
+double test_average_tree_time(T_tree<T> *tree,
                               const char *name,
                               int items_amount, double del_part,
                               bool isPrintToFile,
@@ -71,10 +71,10 @@ double test_average_tree_time(clsBinaryTree<T_item, T> *tree,
     for(int i=0; i < stat_amount; ++i) {
         if(!tree->isEmpty()) {
             delete tree;
-            tree = new clsBinaryTree<T_item, T>();
+            tree = new T_tree<T>();
         }
 
-        time += test_tree<T_item, T>(tree, name,
+        time += test_tree<T_tree, T>(tree, name,
                                      items_amount, del_part, isPrintToFile);
     }
     time /= (double)stat_amount;

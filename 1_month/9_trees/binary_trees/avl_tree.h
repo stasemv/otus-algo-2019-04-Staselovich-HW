@@ -189,7 +189,7 @@ public:
     clsAVLTree() : clsBinaryTree<clsAVLTreeItem, T>() { }
     clsAVLTree(T __data) : clsBinaryTree<clsAVLTreeItem, T>(__data) {}
     ~clsAVLTree() {
-        ~clsBinaryTree<clsAVLTreeItem, T>();
+//        ~clsBinaryTree<clsAVLTreeItem, T>();
     }
 };
 

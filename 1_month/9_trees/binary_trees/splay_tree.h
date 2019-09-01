@@ -197,7 +197,7 @@ public:
     clsSplayTree() : clsBinaryTree<clsSplayTreeItem, T>() {}
     clsSplayTree(T data) : clsBinaryTree<clsSplayTreeItem, T>(data) {}    
     ~clsSplayTree() {
-        ~clsBinaryTree<clsSplayTreeItem, T>();
+//        ~clsBinaryTree<clsSplayTreeItem, T>();
     }
 
     clsSplayTreeItem<T> *find(T __data) {

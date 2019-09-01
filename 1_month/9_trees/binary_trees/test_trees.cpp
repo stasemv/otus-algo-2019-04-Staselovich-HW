@@ -25,13 +25,13 @@ void test_trees()
 
         double time;
         clsAVLTree<int> *avlTree = new clsAVLTree<int>();
-        time = test_average_tree_time<clsAVLTreeItem, int>(avlTree, "avl_tree",
+        time = test_average_tree_time<clsAVLTree, int>(avlTree, "avl_tree",
                                                            items_amount, del_part,
                                                            isPrint, stat_amount);
         fprintf(fout, "%f\t", time);
 
         clsSplayTree<int> *splay_tree = new clsSplayTree<int>();
-        time = test_average_tree_time<clsSplayTreeItem, int>(splay_tree, "splay_tree",
+        time = test_average_tree_time<clsSplayTree, int>(splay_tree, "splay_tree",
                                                              items_amount, del_part,
                                                              isPrint, stat_amount);
         fprintf(fout, "%f\t", time);
