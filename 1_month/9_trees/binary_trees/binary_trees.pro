@@ -3,6 +3,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+INCLUDEPATH += ../../../1_month/2_dynamic_arrays/dynamicArray
+
 DESTDIR = ../bin
 OBJECTS_DIR = ../bin/.obj
 MOC_DIR = ../bin/.moc

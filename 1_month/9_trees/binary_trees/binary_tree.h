@@ -70,7 +70,7 @@ public:
     clsBinaryTree() {
         _root = NULL;
     }
-    ~clsBinaryTree() {
+    virtual ~clsBinaryTree() {
         if(_root) {
             delete _root;
             _root = NULL;
