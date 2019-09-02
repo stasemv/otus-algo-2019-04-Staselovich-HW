@@ -64,6 +64,7 @@ public:
     clsVector<sctGraphArc> getArcsVector() const;
     clsVector<sctGraphArc> getArcsVector(int v) const;
     clsVector<sctGraphArc> getOuterArcs(clsVector<int> *_v) const;
+    clsVector<sctGraphArc> getOuterArcs(int v) const;
 
 };
 
@@ -127,6 +128,15 @@ public:
     }
 };
 
+struct sctPathPoint {
+    int distance;
+    int index;
+    int from;
+
+    bool operator > (const sctPathPoint & a) const {
+        return distance > a.distance;
+    }
+};
 
 // functions:
 int calcKorasaju(clsAdjacencyVector const * const adjVector,
@@ -138,6 +148,7 @@ clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
 clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G);
 
-//clsVector<sctGraphArc> calcDeikstra(clsAdjacencyVector const * const G, int start, int end);
+clsVector<sctGraphArc> calcDeikstra(clsAdjacencyVector const * const G,
+                                    int start, int end);
 
 #endif // GRAPHS_H

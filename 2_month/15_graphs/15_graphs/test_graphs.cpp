@@ -135,7 +135,7 @@ clsAdjacencyVector * init_wiki_Deikstra_graph() {
     clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
     G->addEdge(0, 1, 7); G->addEdge(0, 2, 9); G->addEdge(0, 5, 14);
     G->addEdge(1, 2, 10); G->addEdge(1, 3, 15);
-    G->addEdge(2, 3, 11); G->addEdge(2, 5, 11);
+    G->addEdge(2, 3, 11); G->addEdge(2, 5, 2);
     G->addEdge(3, 4, 6);
     G->addEdge(4, 5, 9);
     return G;
@@ -159,15 +159,27 @@ void simple_test_shortest_path(clsAdjacencyVector *G,
                                            const int, const int))
 {
     clsVector<sctGraphArc> path = search_func(G, start, end);
-    printf("ostov tree edges:\n");
-    int sum = 0;
-    for(size_t i=0; i < path.size(); ++i) {
-        printf("{%d - %d}\n", path[i].start, path[i].end);
-        sum += path[i].weight;
+    if(path.size() > 0) {
+        printf("The shortest path:\n");
+        int sum = 0;
+        for(size_t i=0; i < path.size(); ++i) {
+            printf("{%d - %d}\n", path[i].start, path[i].end);
+            sum += path[i].weight;
+        }
+        printf("path sum = %d\n", sum);
     }
-    printf("ostov tree sum = %d\n", sum);
+    else
+        printf("path does not exist\n");
 }
 
+#define run_simple_test_shortest_path(graph_name, start, end, alg_name) \
+{   \
+    printf("Test %s algorithm on %s graph:\n", #alg_name, #graph_name);    \
+    clsAdjacencyVector *G1 = init_##graph_name##_Deikstra_graph();      \
+    simple_test_shortest_path(G1, start, end, calc##alg_name);          \
+    delete G1;      \
+    printf("\n");   \
+}
 
 void test_graphs()
 {
@@ -177,14 +189,13 @@ void test_graphs()
 //    simple_test_topologic_sort(calcDemucron);
 //    simple_test_topologic_sort(calcTarjan);
 
-    simple_test_min_ostov_tree(calcPrim);
-    simple_test_min_ostov_tree(calcKruskal);
+//    simple_test_min_ostov_tree(calcPrim);
+//    simple_test_min_ostov_tree(calcKruskal);
 
-#if 0
-    {
-        clsAdjacencyVector *G1 = init_wiki_Deikstra_graph();
-        simple_test_shortest_path(G1, 0, 6, calcDeikstra);
-        delete G1;
-    }
+#if 1
+    run_simple_test_shortest_path(wiki, 0, 4, Deikstra);
+    run_simple_test_shortest_path(custom, 0, 6, Deikstra);
 #endif
 }
+
+#undef run_simple_test_shortest_path
