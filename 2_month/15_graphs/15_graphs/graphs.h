@@ -22,6 +22,13 @@ struct sctGraphArc {
     bool operator < (const sctGraphArc & a) const {
         return weight < a.weight;
     }
+    bool operator > (const sctGraphArc & a) const {
+        return weight > a.weight;
+    }
+    bool operator == (const sctGraphArc & a) const {
+        return (start == a.start) && (end == a.end)
+                && (weight == a.weight);
+    }
 };
 
 class clsAdjacencyVector
@@ -129,6 +136,8 @@ clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 //clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
 
 clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
-clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G);
+clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G);
+
+//clsVector<sctGraphArc> calcDeikstra(clsAdjacencyVector const * const G, int start, int end);
 
 #endif // GRAPHS_H

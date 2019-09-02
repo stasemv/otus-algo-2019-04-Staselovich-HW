@@ -94,6 +94,7 @@ void simple_test_topologic_sort(
             printf("v_%d, ", levels[i][j]);
         printf("\n");
     }
+    delete G;
 //    delete[] levels;
 }
 
@@ -126,7 +127,47 @@ void simple_test_min_ostov_tree(
         sum += ostTree[i].weight;
     }
     printf("ostov tree sum = %d\n", sum);
+    delete G;
 }
+
+clsAdjacencyVector * init_wiki_Deikstra_graph() {
+    int v_amount = 6;
+    clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
+    G->addEdge(0, 1, 7); G->addEdge(0, 2, 9); G->addEdge(0, 5, 14);
+    G->addEdge(1, 2, 10); G->addEdge(1, 3, 15);
+    G->addEdge(2, 3, 11); G->addEdge(2, 5, 11);
+    G->addEdge(3, 4, 6);
+    G->addEdge(4, 5, 9);
+    return G;
+}
+
+clsAdjacencyVector * init_custom_Deikstra_graph() {
+    int v_amount = 7;
+    clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
+    G->addEdge(0, 1, 2); G->addEdge(0, 2, 3); G->addEdge(0, 3, 6);
+    G->addEdge(1, 2, 4); G->addEdge(1, 4, 9);
+    G->addEdge(2, 3, 1); G->addEdge(2, 4, 7); G->addEdge(2, 5, 6);
+    G->addEdge(3, 5, 4);
+    G->addEdge(4, 5, 1); G->addEdge(4, 6, 5);
+    G->addEdge(5, 6, 8);
+    return G;
+}
+
+void simple_test_shortest_path(clsAdjacencyVector *G,
+                              const int start, const int end,
+        clsVector<sctGraphArc> search_func(clsAdjacencyVector const * const,
+                                           const int, const int))
+{
+    clsVector<sctGraphArc> path = search_func(G, start, end);
+    printf("ostov tree edges:\n");
+    int sum = 0;
+    for(size_t i=0; i < path.size(); ++i) {
+        printf("{%d - %d}\n", path[i].start, path[i].end);
+        sum += path[i].weight;
+    }
+    printf("ostov tree sum = %d\n", sum);
+}
+
 
 void test_graphs()
 {
@@ -137,5 +178,13 @@ void test_graphs()
 //    simple_test_topologic_sort(calcTarjan);
 
     simple_test_min_ostov_tree(calcPrim);
-//    simple_test_min_ostov_tree(calcKraskal);
+    simple_test_min_ostov_tree(calcKruskal);
+
+#if 0
+    {
+        clsAdjacencyVector *G1 = init_wiki_Deikstra_graph();
+        simple_test_shortest_path(G1, 0, 6, calcDeikstra);
+        delete G1;
+    }
+#endif
 }

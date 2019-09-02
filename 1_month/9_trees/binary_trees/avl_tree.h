@@ -53,10 +53,10 @@ public:
 //private:
     clsAVLTreeItem * insert(clsAVLTreeItem *__item) {
         clsAVLTreeItem** direction = NULL;
-        if(__item->_data <= _data)
-            direction = &_left;
-        else
+        if(__item->_data > _data)
             direction = &_right;
+        else
+            direction = &_left;
         if(direction && *direction)
             *direction = (*direction)->insert(__item);
         else
@@ -113,6 +113,13 @@ public:
         if(direction)
             return direction->find(__data);
         return res;
+    }
+    void getArray(clsVector<T> *arr) {
+        if(_left)
+            _left->getArray(arr);
+        arr->add(_data);
+        if(_right)
+            _right->getArray(arr);
     }
 
     clsAVLTreeItem* rebalance() {

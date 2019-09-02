@@ -2,7 +2,7 @@
 
 #include "stdlib.h"
 #include "../../../1_month/2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
-#include "../../../1_month/9_trees/binary_trees/splay_tree.h"
+#include "../../../1_month/9_trees/binary_trees/avl_tree.h"
 
 #include <algorithm>
 #include <set>
@@ -333,46 +333,59 @@ clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
     return ostov;
 }
 
-//clsVector<sctGraphArc> calcKraskal(clsAdjacencyVector const * const G)
-//{
-//    clsVector<sctGraphArc> ostov;
-//    size_t n = G->nVertex();
-//    if(n <= 0)
-//        return ostov;
+clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G)
+{
+    clsVector<sctGraphArc> ostov;
+    size_t n = G->nVertex();
+    if(n <= 0)
+        return ostov;
 
-//    clsSplayTree<int> ostovVerts;
-//    clsVector<sctGraphArc> arcs_temp = G->getArcsVector();
+    clsAVLTree<int> ostovVerts;
+    clsVector<sctGraphArc> arcs_temp = G->getArcsVector();
 
-////    std::sort(arcs.begin(), arcs.end());
-//    clsSplayTree<sctGraphArc> _arcs;
-//    for(size_t i=0; i < arcs_temp.size(); ++i)
-//        _arcs.insert(arcs_temp[i]);
-//    clsVector<sctGraphArc> arcs = _arcs.getArray();
+//    std::sort(arcs.begin(), arcs.end());
+    clsAVLTree<sctGraphArc> _arcs;
+    for(size_t i=0; i < arcs_temp.size(); ++i)
+        _arcs.insert(arcs_temp[i]);
+    clsVector<sctGraphArc> arcs = _arcs.getArray();
 
-//    ostov.push_back(arcs[0]);
-//    ostovVerts.insert(arcs[0].start);
-//    ostovVerts.insert(arcs[0].end);
-//    arcs.erase(arcs.begin());
+    ostov.push_back(arcs[0]);
+    ostovVerts.insert(arcs[0].start);
+    ostovVerts.insert(arcs[0].end);
+    arcs.remove(0);
 
-//    while((ostov.size()+1) < n) {
-//        bool isNewArcFound = false;
+    while((ostov.size()+1) < n) {
+        bool isNewArcFound = false;
 //        for(clsVector<sctGraphArc>::iterator it = arcs.begin();
 //            it != arcs.end(); ++it) {
-//            if(ostovVerts.find((*it).start)
-//                    || ostovVerts.find((*it).end))
-//                if(ostovVerts.find((*it).start)
-//                        || ostovVerts.find((*it).end)) {
-//                    ostov.push_back(*it);
-//                    ostovVerts.insert((*it).start);
-//                    ostovVerts.insert((*it).end);
-//                    arcs.erase(it);
-//                    isNewArcFound = true;
-//                    break;
-//                }
-//        }
-//        if(!isNewArcFound)
-//            break;
-//    }
+        for(int i=0; i < arcs.size(); ++i) {
+            if(ostovVerts.find(arcs[i].start)
+                    || ostovVerts.find(arcs[i].end))
+                if(!ostovVerts.find(arcs[i].start)
+                        || !ostovVerts.find(arcs[i].end)) {
+                    ostov.push_back(arcs[i]);
+                    ostovVerts.insert(arcs[i].start);
+                    ostovVerts.insert(arcs[i].end);
+                    arcs.remove(i);
+                    isNewArcFound = true;
+                    break;
+                }
+        }
+        if(!isNewArcFound)
+            break;
+    }
 
-//    return ostov;
+    return ostov;
+}
+
+//clsVector<sctGraphArc> calcDeikstra(clsAdjacencyVector const * const G,
+//                                    int start, int end)
+//{
+//    clsVector<sctGraphArc> path;
+//    int *activeVertexes = new int[G->nVertex()];
+
+
+
+//    delete[] activeVertexes;
+//    return path;
 //}
