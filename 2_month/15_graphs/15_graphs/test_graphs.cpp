@@ -99,7 +99,8 @@ void simple_test_topologic_sort(
 }
 
 void simple_test_min_ostov_tree(
-        clsVector<sctGraphArc> ostov_func(clsAdjacencyVector const * const))
+        clsVector<sctGraphArc> ostov_func(clsAdjacencyVector const * const),
+        const char *alg_name)
 {
     int v_amount = 7;
     clsAdjacencyVector *G = new clsAdjacencyVector(v_amount);
@@ -119,6 +120,7 @@ void simple_test_min_ostov_tree(
 // 4-6
 // weight sum = 5 + 7 + 7 + 5 + 6 + 9 = 39
 
+    printf("Test %s:\n", alg_name);
     clsVector<sctGraphArc> ostTree = ostov_func(G);
     printf("ostov tree edges:\n");
     int sum = 0;
@@ -126,7 +128,7 @@ void simple_test_min_ostov_tree(
         printf("{%d - %d}\n", ostTree[i].start, ostTree[i].end);
         sum += ostTree[i].weight;
     }
-    printf("ostov tree sum = %d\n", sum);
+    printf("ostov tree sum = %d\n\n", sum);
     delete G;
 }
 
@@ -172,6 +174,19 @@ void simple_test_shortest_path(clsAdjacencyVector *G,
         printf("path does not exist\n");
 }
 
+void test_graphs()
+{
+//    simple_test_Kosaraju();
+//    test_Kosaraju(1000, 1000);
+
+//    simple_test_topologic_sort(calcDemucron);
+//    simple_test_topologic_sort(calcTarjan);
+
+    simple_test_min_ostov_tree(calcPrim, "Prim");
+    simple_test_min_ostov_tree(calcBoruvka, "Boruvka");
+    simple_test_min_ostov_tree(calcKruskal, "Kruskal");
+
+#if 0
 #define run_simple_test_shortest_path(graph_name, start, end, alg_name) \
 {   \
     printf("Test %s algorithm on %s graph:\n", #alg_name, #graph_name);    \
@@ -181,21 +196,15 @@ void simple_test_shortest_path(clsAdjacencyVector *G,
     printf("\n");   \
 }
 
-void test_graphs()
-{
-//    simple_test_Kosaraju();
-//    test_Kosaraju(1000, 1000);
-
-//    simple_test_topologic_sort(calcDemucron);
-//    simple_test_topologic_sort(calcTarjan);
-
-//    simple_test_min_ostov_tree(calcPrim);
-//    simple_test_min_ostov_tree(calcKruskal);
-
-#if 1
     run_simple_test_shortest_path(wiki, 0, 4, Deikstra);
     run_simple_test_shortest_path(custom, 0, 6, Deikstra);
+
+#undef run_simple_test_shortest_path
+#endif
+
+#if 1
+
+
 #endif
 }
 
-#undef run_simple_test_shortest_path

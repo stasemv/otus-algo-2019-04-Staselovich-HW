@@ -128,6 +128,30 @@ public:
     }
 };
 
+struct sctUnionFind {
+    sctUnionFind *_root;
+    int _index;
+
+    sctUnionFind() : _root(NULL), _index(0) {}
+    sctUnionFind *root() {
+        if(_root)
+            return _root->root();
+        return this;
+    }
+    void merge(sctUnionFind *u) {
+        sctUnionFind *root_ = u->root();
+        if(_root)
+            root_->_root = _root;
+        else
+            root_->_root = this;
+    }
+    int find() {
+        if(_root)
+            return _root->find();
+        return _index;
+    }
+};
+
 struct sctPathPoint {
     int distance;
     int index;
@@ -146,6 +170,7 @@ clsList<clsVector<int> > calcDemucron(clsAdjacencyMatrix const * const _matrix);
 //clsList<clsVector<int> > calcTarjan(clsAdjacencyMatrix const * const _matrix);
 
 clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G);
+clsVector<sctGraphArc> calcBoruvka(clsAdjacencyVector const * const G);
 clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G);
 
 clsVector<sctGraphArc> calcDeikstra(clsAdjacencyVector const * const G,

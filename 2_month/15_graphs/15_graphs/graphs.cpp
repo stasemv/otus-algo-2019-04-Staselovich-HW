@@ -341,6 +341,35 @@ clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
     return ostov;
 }
 
+clsVector<sctGraphArc> calcBoruvka(clsAdjacencyVector const * const G)
+{
+    clsVector<sctGraphArc> ostov;
+    clsVector<sctGraphArc> edges = G->getArcsVector();
+    // сортировка через АВЛ-дерево
+    clsAVLTree<sctGraphArc> _arcs;
+    for(size_t i=0; i < edges.size(); ++i)
+        _arcs.insert(edges[i]);
+    clsVector<sctGraphArc> arcs = _arcs.getArray();
+    size_t N = G->nVertex();
+
+    sctUnionFind *forest = new sctUnionFind[N];
+    for(size_t i=0; i<N; ++i)
+        forest[i]._index = i;
+    int amount = N;
+    while(amount > 1) {
+        for(size_t i=0; i<arcs.size(); ++i)
+            if(forest[arcs[i].start].find() != forest[arcs[i].end].find()) {
+                forest[arcs[i].start].merge(&forest[arcs[i].end]);
+                ostov.push_back(arcs[i]);
+                if(--amount < 2)
+                    break;
+            }
+    }
+
+    delete[] forest;
+    return ostov;
+}
+
 clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G)
 {
     clsVector<sctGraphArc> ostov;
@@ -352,6 +381,7 @@ clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G)
     clsVector<sctGraphArc> arcs_temp = G->getArcsVector();
 
 //    std::sort(arcs.begin(), arcs.end());
+    // сортировка через АВЛ-дерево
     clsAVLTree<sctGraphArc> _arcs;
     for(size_t i=0; i < arcs_temp.size(); ++i)
         _arcs.insert(arcs_temp[i]);
