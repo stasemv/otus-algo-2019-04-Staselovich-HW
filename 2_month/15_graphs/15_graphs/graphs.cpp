@@ -2,6 +2,7 @@
 
 #include "stdlib.h"
 #include "stddef.h"
+#include "stdio.h"
 #include "../../../1_month/2_dynamic_arrays/dynamicArray/dynamic_arrays.h"
 #include "../../../1_month/9_trees/binary_trees/avl_tree.h"
 #include "../../../1_month/5_simple_sorts/simple_sorts/sorts.h"
@@ -341,6 +342,28 @@ clsVector<sctGraphArc> calcPrim(clsAdjacencyVector const * const G)
     return ostov;
 }
 
+void printBoruvkaForest(int step, sctUnionFind *forest, int amount,
+                        sctGraphArc *arc = NULL)
+{
+#ifdef _PRINT_GRAPHS_INFO_
+    clsAVLTree<int> roots;
+    for(int i=0; i<amount; ++i) {
+        int idx = forest[i].root()->_index;
+        if(!roots.find(idx))
+            roots.insert(idx);
+    }
+    clsVector<int> vec = roots.getArray();
+    if(arc)
+        printf("arc: {%d - %d}; ",
+               arc->start, arc->end);
+    printf("step = %d; forest: {%d",
+           step, vec[0]);
+    for(size_t i=1; i<vec.size(); ++i)
+        printf(", %d", vec[i]);
+    printf("}\n");
+#endif
+}
+
 clsVector<sctGraphArc> calcBoruvka(clsAdjacencyVector const * const G)
 {
     clsVector<sctGraphArc> ostov;
@@ -356,14 +379,18 @@ clsVector<sctGraphArc> calcBoruvka(clsAdjacencyVector const * const G)
     for(size_t i=0; i<N; ++i)
         forest[i]._index = i;
     int amount = N;
+    int step = 0;
+    printBoruvkaForest(step++, forest, N);
     while(amount > 1) {
         for(size_t i=0; i<arcs.size(); ++i)
             if(forest[arcs[i].start].find() != forest[arcs[i].end].find()) {
                 forest[arcs[i].start].merge(&forest[arcs[i].end]);
                 ostov.push_back(arcs[i]);
+                printBoruvkaForest(step++, forest, N, &arcs[i]);
                 if(--amount < 2)
                     break;
             }
+        printBoruvkaForest(step++, forest, N);
     }
 
     delete[] forest;
@@ -396,7 +423,7 @@ clsVector<sctGraphArc> calcKruskal(clsAdjacencyVector const * const G)
         bool isNewArcFound = false;
 //        for(clsVector<sctGraphArc>::iterator it = arcs.begin();
 //            it != arcs.end(); ++it) {
-        for(int i=0; i < arcs.size(); ++i) {
+        for(size_t i=0; i < arcs.size(); ++i) {
             if(ostovVerts.find(arcs[i].start)
                     || ostovVerts.find(arcs[i].end))
                 if(!ostovVerts.find(arcs[i].start)

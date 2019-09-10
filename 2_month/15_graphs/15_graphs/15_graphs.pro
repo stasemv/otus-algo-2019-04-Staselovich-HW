@@ -5,6 +5,8 @@ CONFIG -= qt
 
 INCLUDEPATH += ../../../1_month/2_dynamic_arrays/dynamicArray
 
+DEFINES += _PRINT_GRAPHS_INFO_
+
 SOURCES += main.cpp \
     test_graphs.cpp \
     graphs.cpp
