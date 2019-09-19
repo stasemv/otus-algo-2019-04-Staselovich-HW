@@ -42,6 +42,14 @@ public:
     bool empty() const {
         return (_size == 0);
     }
+    virtual void printArray() {}
+    virtual void reverse() {
+        for(int i=0; i < _size/2; ++i) {
+            T buf = _array[i];
+            _array[i] = _array[_size - i - 1];
+            _array[_size - i - 1] = buf;
+        }
+    }
 };
 
 template<class T> class clsNoobDynArr : public clsDynArr<T>
@@ -272,6 +280,14 @@ public:
         }
         return T();
     }
+    virtual void printArray(FILE *fout) {
+
+        int n = clsDynArr<T>::_size;
+        for(int i=0; i < n; ++i) {
+            fprintf(fout, "%i\t", (int)clsDynArr<T>::_array[i]);
+        }
+        printf("\n");
+    }
 };
 
 template<class T> class clsMatrixArr : public clsDynArr<T>
@@ -469,7 +485,7 @@ public:
         }
         return T();
     }
-    void printArray() {
+    virtual void printArray() {
         clsListNode<clsBlockArr<T> > *node = _matrix;
         do {
             clsBlockArr<T> *block = node->getItemPtr();
