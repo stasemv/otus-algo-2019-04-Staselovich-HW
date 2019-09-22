@@ -1,0 +1,104 @@
+heap:
+ptr - 013A0048
+size = 99952
+memory - 013A0060
+blocks amount = 1
+blocks:
+block[0] (013B86D0): { isBisy = 0, size = 99952, ptr = 013A0060 }
+heap:
+ptr - 013A0048
+size = 99952
+memory - 013A0060
+blocks amount = 7
+blocks:
+block[0] (013B86D0): { isBisy = 1, size = 128, ptr = 013A0060 }
+block[1] (013B86B8): { isBisy = 1, size = 8, ptr = 013A00E0 }
+block[2] (013B86A0): { isBisy = 1, size = 1256, ptr = 013A00E8 }
+block[3] (013B8688): { isBisy = 1, size = 512, ptr = 013A05D0 }
+block[4] (013B8670): { isBisy = 1, size = 64, ptr = 013A07D0 }
+block[5] (013B8658): { isBisy = 1, size = 12544, ptr = 013A0810 }
+block[6] (013B8640): { isBisy = 0, size = 85296, ptr = 013A3910 }
+Heap manager deleting error
+
+alloc str7 (lenght = 64)
+heap:
+ptr - 013A0048
+size = 99952
+memory - 013A0060
+blocks amount = 8
+blocks:
+block[0] (013B86D0): { isBisy = 1, size = 128, ptr = 013A0060 }
+block[1] (013B86B8): { isBisy = 1, size = 8, ptr = 013A00E0 }
+block[2] (013B86A0): { isBisy = 1, size = 1256, ptr = 013A00E8 }
+block[3] (013B8688): { isBisy = 1, size = 512, ptr = 013A05D0 }
+block[4] (013B8670): { isBisy = 1, size = 64, ptr = 013A07D0 }
+block[5] (013B8658): { isBisy = 1, size = 12544, ptr = 013A0810 }
+block[6] (013B8640): { isBisy = 1, size = 64, ptr = 013A3910 }
+block[7] (013B8628): { isBisy = 0, size = 85208, ptr = 013A3950 }
+
+alloc str8 (lenght = 24164)
+heap:
+ptr - 013A0048
+size = 99952
+memory - 013A0060
+blocks amount = 9
+blocks:
+block[0] (013B86D0): { isBisy = 1, size = 128, ptr = 013A0060 }
+block[1] (013B86B8): { isBisy = 1, size = 8, ptr = 013A00E0 }
+block[2] (013B86A0): { isBisy = 1, size = 1256, ptr = 013A00E8 }
+block[3] (013B8688): { isBisy = 1, size = 512, ptr = 013A05D0 }
+block[4] (013B8670): { isBisy = 1, size = 64, ptr = 013A07D0 }
+block[5] (013B8658): { isBisy = 1, size = 12544, ptr = 013A0810 }
+block[6] (013B8640): { isBisy = 1, size = 64, ptr = 013A3910 }
+block[7] (013B8628): { isBisy = 1, size = 24168, ptr = 013A3950 }
+block[8] (013B8610): { isBisy = 0, size = 61016, ptr = 013A97B8 }
+
+alloc str9 (lenght = 964)
+heap:
+ptr - 013A0048
+size = 99952
+memory - 013A0060
+blocks amount = 10
+blocks:
+block[0] (013B86D0): { isBisy = 1, size = 128, ptr = 013A0060 }
+block[1] (013B86B8): { isBisy = 1, size = 8, ptr = 013A00E0 }
+block[2] (013B86A0): { isBisy = 1, size = 1256, ptr = 013A00E8 }
+block[3] (013B8688): { isBisy = 1, size = 512, ptr = 013A05D0 }
+block[4] (013B8670): { isBisy = 1, size = 64, ptr = 013A07D0 }
+block[5] (013B8658): { isBisy = 1, size = 12544, ptr = 013A0810 }
+block[6] (013B8640): { isBisy = 1, size = 64, ptr = 013A3910 }
+block[7] (013B8628): { isBisy = 1, size = 24168, ptr = 013A3950 }
+block[8] (013B8610): { isBisy = 1, size = 968, ptr = 013A97B8 }
+block[9] (013B85F8): { isBisy = 0, size = 60024, ptr = 013A9B80 }
+
+alloc str10 (lenght = 9364)
+heap:
+ptr - 013A0048
+size = 99952
+memory - 013A0060
+blocks amount = 11
+blocks:
+block[0] (013B86D0): { isBisy = 1, size = 128, ptr = 013A0060 }
+block[1] (013B86B8): { isBisy = 1, size = 8, ptr = 013A00E0 }
+block[2] (013B86A0): { isBisy = 1, size = 1256, ptr = 013A00E8 }
+block[3] (013B8688): { isBisy = 1, size = 512, ptr = 013A05D0 }
+block[4] (013B8670): { isBisy = 1, size = 64, ptr = 013A07D0 }
+block[5] (013B8658): { isBisy = 1, size = 12544, ptr = 013A0810 }
+block[6] (013B8640): { isBisy = 1, size = 64, ptr = 013A3910 }
+block[7] (013B8628): { isBisy = 1, size = 24168, ptr = 013A3950 }
+block[8] (013B8610): { isBisy = 1, size = 968, ptr = 013A97B8 }
+block[9] (013B85F8): { isBisy = 1, size = 9368, ptr = 013A9B80 }
+block[10] (013B85E0): { isBisy = 0, size = 50632, ptr = 013AC018 }
+memory:
+block[0] (00361418): { isBisy = 1, size = 128, ptr = 013A0060 }
+block[1] (00361430): { isBisy = 1, size = 8, ptr = 013A00E0 }
+block[2] (00361448): { isBisy = 1, size = 1256, ptr = 013A00E8 }
+block[3] (00361460): { isBisy = 1, size = 512, ptr = 013A05D0 }
+block[4] (00361478): { isBisy = 1, size = 64, ptr = 013A07D0 }
+block[5] (00361490): { isBisy = 1, size = 12544, ptr = 013A0810 }
+block[6] (003614A8): { isBisy = 1, size = 64, ptr = 013A3910 }
+block[7] (003614C0): { isBisy = 1, size = 24168, ptr = 013A3950 }
+block[8] (003614D8): { isBisy = 1, size = 968, ptr = 013A97B8 }
+block[9] (003614F0): { isBisy = 1, size = 9368, ptr = 013A9B80 }
+block[10] (00361508): { isBisy = 0, size = 50632, ptr = 013AC018 }
+Done!
