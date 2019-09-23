@@ -2,7 +2,7 @@
 #define AVL_TREE_H
 
 #include "binary_tree.h"
-#include "../../6_heap_tree_sort/heap_tree_sort/tree_sorts.h"
+//#include "../../6_heap_tree_sort/heap_tree_sort/tree_sorts.h"
 
 template<class T>
 class clsAVLTreeItem // : public clsBinTreeItem<T>
@@ -40,6 +40,9 @@ public:
     }
     T data() {
         return _data;
+    }
+    T * data_ptr() {
+        return &_data;
     }
     int height() {
         return _height;
