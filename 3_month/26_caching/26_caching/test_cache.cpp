@@ -48,7 +48,7 @@ void test_cache()
     int num = 45;
     testFiboWithCache(num, fibn, NULL); // without cache
 
-    clsCache<int> cache(128, 5);
+    clsCache<int> cache(256, 5);
     for(int i=10; i > 0; --i) {
         cache.set_ttl(i);
         testFiboWithCache(num, fibn, &cache); // with cache
