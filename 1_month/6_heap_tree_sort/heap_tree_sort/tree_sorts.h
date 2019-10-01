@@ -74,21 +74,6 @@ void heapDrown(T *arr, int idx, int dim)
     }
 }
 
-int heapLeft(int index)
-{
-    return 2*index + 1;
-}
-
-int heapRight(int index)
-{
-    return 2*index + 2;
-}
-
-int heapParent(int index)
-{
-    return (index-1) / 2;
-}
-
 template<class T>
 void buildHeap(T *arr, int dim)
 {
