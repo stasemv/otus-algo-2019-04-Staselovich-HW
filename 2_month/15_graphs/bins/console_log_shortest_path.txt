@@ -1,0 +1,17 @@
+Test Deikstra algorithm on wiki graph:
+The shortest path:
+{0 - 2}
+{2 - 5}
+{5 - 4}
+path sum = 20
+
+Test Deikstra algorithm on custom graph:
+The shortest path:
+{0 - 2}
+{2 - 3}
+{3 - 5}
+{5 - 4}
+{4 - 6}
+path sum = 14
+
+Done!

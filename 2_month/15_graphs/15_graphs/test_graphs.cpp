@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "graphs.h"
+#include "shortest_path.h"
 
 void simple_test_Kosaraju()
 {
@@ -182,11 +183,11 @@ void test_graphs()
 //    simple_test_topologic_sort(calcDemucron);
 //    simple_test_topologic_sort(calcTarjan);
 
-    simple_test_min_ostov_tree(calcPrim, "Prim");
-    simple_test_min_ostov_tree(calcBoruvka, "Boruvka");
-    simple_test_min_ostov_tree(calcKruskal, "Kruskal");
+//    simple_test_min_ostov_tree(calcPrim, "Prim");
+//    simple_test_min_ostov_tree(calcBoruvka, "Boruvka");
+//    simple_test_min_ostov_tree(calcKruskal, "Kruskal");
 
-#if 0
+#if 1
 #define run_simple_test_shortest_path(graph_name, start, end, alg_name) \
 {   \
     printf("Test %s algorithm on %s graph:\n", #alg_name, #graph_name);    \

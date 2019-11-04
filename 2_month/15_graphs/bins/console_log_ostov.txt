@@ -1,0 +1,39 @@
+Test Prim:
+ostov tree edges:
+{6 - 4}
+{4 - 2}
+{4 - 1}
+{1 - 0}
+{0 - 3}
+{3 - 5}
+ostov tree sum = 39
+
+Test Boruvka:
+step = 0; forest: {0, 1, 2, 3, 4, 5, 6}
+arc: {4 - 2}; step = 1; forest: {0, 1, 3, 4, 5, 6}
+arc: {3 - 0}; step = 2; forest: {1, 3, 4, 5, 6}
+arc: {5 - 3}; step = 3; forest: {1, 4, 5, 6}
+arc: {4 - 1}; step = 4; forest: {4, 5, 6}
+arc: {1 - 0}; step = 5; forest: {4, 6}
+arc: {6 - 4}; step = 6; forest: {6}
+step = 7; forest: {6}
+ostov tree edges:
+{4 - 2}
+{3 - 0}
+{5 - 3}
+{4 - 1}
+{1 - 0}
+{6 - 4}
+ostov tree sum = 39
+
+Test Kruskal:
+ostov tree edges:
+{4 - 2}
+{4 - 1}
+{1 - 0}
+{3 - 0}
+{5 - 3}
+{6 - 4}
+ostov tree sum = 39
+
+Done!
